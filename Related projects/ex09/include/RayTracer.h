@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-
+#include <cmath>
 #include <boost/thread/thread.hpp>
 
 #include "FrameBuffer.hpp"
@@ -26,7 +26,15 @@ struct Screen{
 	float top;
 	float bottom;
 };
-
+struct ScreenCoord{
+	ScreenCoord(unsigned int x, unsigned int y){
+		this->x = x;
+		this->y = y;
+	}
+	ScreenCoord(){}
+	unsigned int x;
+	unsigned int y;
+};
 /**
   * The RayTracer class is the main entry point for raytracing
   * our scene, saving results to file, etc.
@@ -51,9 +59,8 @@ public:
 	  */
 	void save(std::string basename, std::string extension);
 
-	void renderFrameArea(Screen screen_area, 
-						std::shared_ptr<FrameBuffer> fb,
-						std::shared_ptr<RayTracerState> state);
+	void renderFrameArea(std::vector<ScreenCoord>* screen_coords, 
+						unsigned int start_index, unsigned int end_index);
 private:
 	std::shared_ptr<FrameBuffer> fb;
 	std::shared_ptr<RayTracerState> state;

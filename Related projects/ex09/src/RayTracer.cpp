@@ -42,26 +42,31 @@ void RayTracer::render() {
 //#else
 //	for (unsigned int j=0; j<fb->getHeight(); ++j) {
 //#endif
-	std::vector<boost::thread> threads; 
-	threads.resize(boost::thread::hardware_concurrency());
 
+	std::vector<ScreenCoord> screen_coords;
+	//screen_coords.resize(fb->getWidth()*fb->getHeight());
 	for (unsigned int j=0; j<fb->getHeight(); ++j) {
 		for (unsigned int i=0; i<fb->getWidth(); ++i) {
-			glm::vec3 out_color(0.0, 0.0, 0.0);
-			float t = std::numeric_limits<float>::max();
-			float x, y, z;
-
-			// Create the ray using the view screen definition 
-			x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-			y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-			z = -1.0f;
-			glm::vec3 direction = glm::vec3(x, y, z);
-			Ray r = Ray(state->getCamPos(), direction);
-
-			//Now do the ray-tracing to shade the pixel
-			out_color = state->rayTrace(r);
-			fb->setPixel(i, j, out_color);
+			screen_coords.push_back(ScreenCoord(j, i));
+			//screen_coords.at(i).x = j;
+			//screen_coords.at(i).y = i;
 		}
+	}
+
+	unsigned int index_count = 0;
+	std::vector<boost::thread> threads; 
+	unsigned int threads_number = boost::thread::hardware_concurrency();
+	unsigned int offset = floor( (float)screen_coords.size() / (float)threads_number );
+
+	for(unsigned int i = 0; i < threads_number; ++i)
+	{
+		if(i == (threads_number-1) )
+		{
+			offset = (screen_coords.size()-1) - index_count;
+		}
+		threads.push_back(boost::thread(std::bind(&RayTracer::renderFrameArea, this, 
+									  &screen_coords, index_count, index_count + offset)));
+		index_count+=offset;
 	}
 
 	for(unsigned int i = 0; i < threads.size(); i++){
@@ -108,25 +113,33 @@ void RayTracer::save(std::string basename, std::string extension) {
 	ilDeleteImages(1, &texid);
 }
 
-void RayTracer::renderFrameArea( Screen screen_area, std::shared_ptr<FrameBuffer> fb, 
-									std::shared_ptr<RayTracerState> state )
+void RayTracer::renderFrameArea( std::vector<ScreenCoord>* screen_coords, 
+	unsigned int start_index, unsigned int end_index )
 {
-	for (unsigned int j = screen.left; j < screen.right; ++j) {
-		for (unsigned int i = screen.top; i < screen.bottom; ++i) {
-			glm::vec3 out_color(0.0, 0.0, 0.0);
-			float t = std::numeric_limits<float>::max();
-			float x, y, z;
+	/*for (unsigned int j = screen.left; j < screen.right; ++j) {
+	for (unsigned int i = screen.top; i < screen.bottom; ++i) {*/
+	for(unsigned int f = start_index; f < end_index; f++)
+	{
+		unsigned int i = screen_coords->at(f).y;
+		unsigned int j = screen_coords->at(f).x;
+		glm::vec3 out_color(0.0, 0.0, 0.0);
+		float t = std::numeric_limits<float>::max();
+		float x, y, z;
 
-			// Create the ray using the view screen definition 
-			x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-			y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-			z = -1.0f;
-			glm::vec3 direction = glm::vec3(x, y, z);
-			Ray r = Ray(state->getCamPos(), direction);
+		// Create the ray using the view screen definition 
+		x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+		y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+		z = -1.0f;
+		glm::vec3 direction = glm::vec3(x, y, z);
+		Ray r = Ray(state->getCamPos(), direction);
 
-			//Now do the ray-tracing to shade the pixel
-			out_color = state->rayTrace(r);
-			fb->setPixel(i, j, out_color);
+		//Now do the ray-tracing to shade the pixel
+		out_color = state->rayTrace(r);
+		fb->setPixel(i, j, out_color);
+		if(out_color != glm::vec3(0.30000001))
+		{
+			int breakehereerere = 0;
 		}
 	}
+	//}
 }
