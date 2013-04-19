@@ -36,12 +36,16 @@ void RayTracer::addSceneObject(std::shared_ptr<SceneObject>& o) {
 
 void RayTracer::render() {
 	//For every pixel, ray-trace using multiple CPUs
-#ifdef _OPENMP
-#pragma omp parallel for
-	for (int j=0; j<static_cast<int>(fb->getHeight()); ++j) {
-#else
+//#ifdef _OPENMP
+//#pragma omp parallel for
+//	for (int j=0; j<static_cast<int>(fb->getHeight()); ++j) {
+//#else
+//	for (unsigned int j=0; j<fb->getHeight(); ++j) {
+//#endif
+	std::vector<boost::thread> threads; 
+	threads.resize(boost::thread::hardware_concurrency());
+
 	for (unsigned int j=0; j<fb->getHeight(); ++j) {
-#endif
 		for (unsigned int i=0; i<fb->getWidth(); ++i) {
 			glm::vec3 out_color(0.0, 0.0, 0.0);
 			float t = std::numeric_limits<float>::max();
@@ -58,6 +62,10 @@ void RayTracer::render() {
 			out_color = state->rayTrace(r);
 			fb->setPixel(i, j, out_color);
 		}
+	}
+
+	for(unsigned int i = 0; i < threads.size(); i++){
+		threads.at(i).join();
 	}
 }
 
@@ -98,4 +106,27 @@ void RayTracer::save(std::string basename, std::string extension) {
 	}
 
 	ilDeleteImages(1, &texid);
+}
+
+void RayTracer::renderFrameArea( Screen screen_area, std::shared_ptr<FrameBuffer> fb, 
+									std::shared_ptr<RayTracerState> state )
+{
+	for (unsigned int j = screen.left; j < screen.right; ++j) {
+		for (unsigned int i = screen.top; i < screen.bottom; ++i) {
+			glm::vec3 out_color(0.0, 0.0, 0.0);
+			float t = std::numeric_limits<float>::max();
+			float x, y, z;
+
+			// Create the ray using the view screen definition 
+			x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+			y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+			z = -1.0f;
+			glm::vec3 direction = glm::vec3(x, y, z);
+			Ray r = Ray(state->getCamPos(), direction);
+
+			//Now do the ray-tracing to shade the pixel
+			out_color = state->rayTrace(r);
+			fb->setPixel(i, j, out_color);
+		}
+	}
 }
