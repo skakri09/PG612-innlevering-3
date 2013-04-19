@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 	try {
 		RayTracer* rt;
 		Timer t;
-		rt = new RayTracer(1920, 1080);
+		rt = new RayTracer(5000, 5000);
 		
 		std::shared_ptr<SceneObjectEffect> color(new ColorEffect(glm::vec3(0.0, 1.0, 0.0)));
 		std::shared_ptr<SceneObjectEffect> phong(new PhongEffect(glm::vec3(0.0, 0.0, 10.0)));

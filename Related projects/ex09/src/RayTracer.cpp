@@ -44,17 +44,14 @@ void RayTracer::render() {
 //#endif
 
 	std::vector<ScreenCoord> screen_coords;
-	//screen_coords.resize(fb->getWidth()*fb->getHeight());
 	for (unsigned int j=0; j<fb->getHeight(); ++j) {
 		for (unsigned int i=0; i<fb->getWidth(); ++i) {
 			screen_coords.push_back(ScreenCoord(j, i));
-			//screen_coords.at(i).x = j;
-			//screen_coords.at(i).y = i;
 		}
 	}
 
 	unsigned int index_count = 0;
-	std::vector<boost::thread> threads; 
+	std::vector<std::shared_ptr<Thread>> threads; 
 	unsigned int threads_number = boost::thread::hardware_concurrency();
 	unsigned int offset = floor( (float)screen_coords.size() / (float)threads_number );
 
@@ -62,15 +59,20 @@ void RayTracer::render() {
 	{
 		if(i == (threads_number-1) )
 		{
-			offset = (screen_coords.size()-1) - index_count;
+			offset = (screen_coords.size()) - index_count;
 		}
-		threads.push_back(boost::thread(std::bind(&RayTracer::renderFrameArea, this, 
-									  &screen_coords, index_count, index_count + offset)));
+		std::shared_ptr<Thread> new_thread = std::make_shared<Thread>();
+		new_thread->thread.reset(new boost::thread(std::bind(&RayTracer::renderFrameArea, this, 
+												&screen_coords, index_count, index_count + offset, new_thread)));
+		new_thread->thread_id = i;
+		new_thread->thread_progress = 0.1f;
+		new_thread->next_progress_target = lerp(index_count, index_count+offset, new_thread->thread_progress);
+		threads.push_back(new_thread);
 		index_count+=offset;
 	}
 
 	for(unsigned int i = 0; i < threads.size(); i++){
-		threads.at(i).join();
+		threads.at(i)->thread->join();
 	}
 }
 
@@ -114,10 +116,10 @@ void RayTracer::save(std::string basename, std::string extension) {
 }
 
 void RayTracer::renderFrameArea( std::vector<ScreenCoord>* screen_coords, 
-	unsigned int start_index, unsigned int end_index )
+	unsigned int start_index, unsigned int end_index,
+	std::shared_ptr<Thread> thread_info)
 {
-	/*for (unsigned int j = screen.left; j < screen.right; ++j) {
-	for (unsigned int i = screen.top; i < screen.bottom; ++i) {*/
+	int workload = end_index-start_index;
 	for(unsigned int f = start_index; f < end_index; f++)
 	{
 		unsigned int i = screen_coords->at(f).y;
@@ -136,10 +138,21 @@ void RayTracer::renderFrameArea( std::vector<ScreenCoord>* screen_coords,
 		//Now do the ray-tracing to shade the pixel
 		out_color = state->rayTrace(r);
 		fb->setPixel(i, j, out_color);
-		if(out_color != glm::vec3(0.30000001))
+
+		if(f >= thread_info->next_progress_target)
 		{
-			int breakehereerere = 0;
+			std::cout<< "Thread " << thread_info->thread_id << ": " 
+				<< thread_info->thread_progress*100.0f << "%" << std::endl;
+			thread_info->thread_progress+=0.1f;
+			thread_info->next_progress_target = lerp(start_index, end_index, thread_info->thread_progress);
 		}
 	}
-	//}
+}
+
+float RayTracer::lerp( int i0, int i1, float t )
+{
+	float v0 = (float)i0;
+	float v1 = (float)i1;
+
+	return v0*(1.0f-t)+v1*t;
 }

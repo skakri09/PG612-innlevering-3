@@ -35,11 +35,18 @@ struct ScreenCoord{
 	unsigned int x;
 	unsigned int y;
 };
+
+struct Thread{
+	std::shared_ptr<boost::thread> thread;
+	int thread_id;
+	float thread_progress;
+	float next_progress_target;
+};
+
 /**
   * The RayTracer class is the main entry point for raytracing
   * our scene, saving results to file, etc.
   */
-
 class RayTracer {
 public:
 	RayTracer(unsigned int width, unsigned int height);
@@ -60,12 +67,15 @@ public:
 	void save(std::string basename, std::string extension);
 
 	void renderFrameArea(std::vector<ScreenCoord>* screen_coords, 
-						unsigned int start_index, unsigned int end_index);
+						unsigned int start_index, unsigned int end_index,
+						std::shared_ptr<Thread> thread_info);
 private:
 	std::shared_ptr<FrameBuffer> fb;
 	std::shared_ptr<RayTracerState> state;
 
 	Screen screen;
+
+	float lerp(int i0, int i1, float t);
 };
 
 #endif
