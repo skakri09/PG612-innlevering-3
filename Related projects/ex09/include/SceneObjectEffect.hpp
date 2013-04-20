@@ -100,7 +100,7 @@ public:
 				shadefactor+=s;
 		}
 		if(shadefactor > 0.0f){
-			shadefactor = 0.5f;//shadefactor * 0.25f + 0.75f;
+			shadefactor = 0.7f;//shadefactor * 0.25f + 0.75f;
 		}
 		else {
 			shadefactor = 1.0f;

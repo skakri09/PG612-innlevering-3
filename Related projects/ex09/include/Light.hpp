@@ -17,7 +17,13 @@
 class LightObject
 {
 public:
-	
+	LightObject(glm::vec3 pos=glm::vec3(0.0),
+				glm::vec3 diff=glm::vec3(0.5),
+				glm::vec3 spec=glm::vec3(0.5)){
+		this->position = pos;
+		this->diff = diff;
+		this->spec = spec;
+	}
 	/**
 	* Performs a test to see if the parameter point is in line of sight(los)
 	* of this light.
@@ -29,6 +35,10 @@ public:
 	*/
 	virtual float PointInShadow(const glm::vec3& point, RayTracerState& state) = 0;
 
+protected:
+	glm::vec3 position;
+	glm::vec3 diff;
+	glm::vec3 spec;
 };
 
 /**
@@ -37,21 +47,24 @@ public:
 class PointLight : public LightObject
 {
 public:
-    PointLight(glm::vec3 position){
-		this->position = position;
+	PointLight(glm::vec3 pos=glm::vec3(0.0),
+		glm::vec3 diff=glm::vec3(0.5),
+		glm::vec3 spec=glm::vec3(0.5))
+		:LightObject(pos, diff, spec){
 	}
 
 	
 	float PointInShadow(const glm::vec3& point, RayTracerState& state){
 		Ray ray(point, position-point);
 		glm::vec3 ray_result = state.rayTrace(ray);
+		
 		if(ray_result == glm::vec3(0.3f))
 			return -1.0f;//no shadow
 		else return 1.0f;//full shadow
 	}
 
 private:
-	glm::vec3 position;
+
 };
 
 #endif // Light_h__
