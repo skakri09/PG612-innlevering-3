@@ -1,4 +1,4 @@
-﻿Build started 4/20/2013 7:02:43 PM.
+﻿Build started 4/20/2013 7:51:46 PM.
      1>Project "C:\PG612\PG612-innlevering-3\Related projects\ex09\raytracer.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\raytracer.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -17,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.06
+Time Elapsed 00:00:00.05
