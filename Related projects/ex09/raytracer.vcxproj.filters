@@ -50,7 +50,7 @@
     <ClInclude Include="include\SceneObjectEffect.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Light.h">
+    <ClInclude Include="include\Light.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

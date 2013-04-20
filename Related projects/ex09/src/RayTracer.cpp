@@ -34,6 +34,10 @@ void RayTracer::addSceneObject(std::shared_ptr<SceneObject>& o) {
 	state->getScene().push_back(o);
 }
 
+void RayTracer::addLightSource(std::shared_ptr<LightObject>& light){
+	state->getLights().push_back(light);
+}
+
 void RayTracer::render() {
 	//For every pixel, ray-trace using multiple CPUs
 //#ifdef _OPENMP

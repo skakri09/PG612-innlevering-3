@@ -57,6 +57,11 @@ public:
 	void addSceneObject(std::shared_ptr<SceneObject>& o);
 
 	/**
+	* Adds a light to the scene
+	*/
+	void addLightSource(std::shared_ptr<LightObject>& light);
+
+	/**
 	  * Renders the current scene
 	  */
 	void render();

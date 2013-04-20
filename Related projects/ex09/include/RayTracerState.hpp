@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include "SceneObject.hpp"
 
+class LightObject;
 /**
   * The RayTracerState class keeps track of the state of the ray-tracing:
   * the objects in the scene, camera position, etc, and its main responsibility

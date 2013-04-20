@@ -35,7 +35,7 @@ void RayTracer::addSceneObject(std::shared_ptr<SceneObject>& o) {
 }
 
 void RayTracer::addLightSource(std::shared_ptr<LightObject>& light){
-
+	state->getLights().push_back(light);
 }
 
 void RayTracer::render() {
