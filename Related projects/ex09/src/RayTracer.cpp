@@ -155,6 +155,7 @@ void RayTracer::renderFrameArea( std::vector<ScreenCoord>* screen_coords,
 			thread_info->next_progress_target = lerp(start_index, end_index, thread_info->thread_progress);
 		}
 	}
+	std::cout<< "Thread " << thread_info->thread_id << " done."<< std::endl;
 }
 
 float RayTracer::lerp( int i0, int i1, float t )

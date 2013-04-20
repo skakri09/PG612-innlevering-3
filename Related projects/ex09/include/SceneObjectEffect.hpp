@@ -78,7 +78,6 @@ public:
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
 		std::vector<std::shared_ptr<LightObject>>::iterator iter;
 		glm::vec3 color;
-		float shadefactor;
 
 		glm::vec3 p = ray.getOrigin() + t*ray.getDirection();
 
@@ -111,7 +110,7 @@ public:
 			}
 			color*=shadefactor;
 		}
-		
+		//glm::vec3 absnormal = glm::vec3(abs(normal.x),abs(normal.y),abs(normal.z)); 
 		return color;//*shadefactor;
 	}
 
