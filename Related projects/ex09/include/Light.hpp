@@ -35,7 +35,6 @@ public:
 	*/
 	virtual float PointInShadow(const glm::vec3& point, RayTracerState& state) = 0;
 
-protected:
 	glm::vec3 position;
 	glm::vec3 diff;
 	glm::vec3 spec;
