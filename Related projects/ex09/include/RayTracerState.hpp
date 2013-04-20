@@ -18,6 +18,7 @@ public:
 	}
 	
 	inline std::vector<std::shared_ptr<SceneObject> >& getScene() { return scene; }
+	inline std::vector<std::shared_ptr<LightObject> >& getLights(){ return lights; } 
 	inline glm::vec3 getCamPos() { return camera_position; }
 
 	/**
@@ -58,6 +59,7 @@ public:
 
 private:
 	std::vector<std::shared_ptr<SceneObject> > scene;
+	std::vector<std::shared_ptr<LightObject> > lights;
 	glm::vec3 camera_position;
 };
 

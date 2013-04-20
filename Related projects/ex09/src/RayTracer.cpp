@@ -44,9 +44,13 @@ void RayTracer::render() {
 //#endif
 
 	std::vector<ScreenCoord> screen_coords;
+	screen_coords.resize(fb->getHeight()*fb->getWidth());
+	unsigned int counter = 0;
 	for (unsigned int j=0; j<fb->getHeight(); ++j) {
 		for (unsigned int i=0; i<fb->getWidth(); ++i) {
-			screen_coords.push_back(ScreenCoord(j, i));
+			screen_coords.at(counter).x = j;
+			screen_coords.at(counter).y = i;
+			counter++;
 		}
 	}
 

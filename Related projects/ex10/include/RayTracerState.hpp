@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 #include "SceneObject.hpp"
-
+#include "Light.h"
 /**
   * The RayTracerState class keeps track of the state of the ray-tracing:
   * the objects in the scene, camera position, etc, and its main responsibility
@@ -18,6 +18,7 @@ public:
 	}
 	
 	inline std::vector<std::shared_ptr<SceneObject> >& getScene() { return scene; }
+	inline std::vector<std::shared_ptr<LightObject> >& getLights(){ return lights; } 
 	inline glm::vec3 getCamPos() { return camera_position; }
 
 	/**
@@ -57,6 +58,8 @@ public:
 
 private:
 	std::vector<std::shared_ptr<SceneObject> > scene;
+	std::vector<std::shared_ptr<LightObject> > lights;
+
 	glm::vec3 camera_position;
 };
 

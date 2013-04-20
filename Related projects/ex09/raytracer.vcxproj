@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClInclude Include="include\CubeMap.hpp" />
     <ClInclude Include="include\FrameBuffer.hpp" />
+    <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\Ray.hpp" />
     <ClInclude Include="include\RayTracer.h" />
     <ClInclude Include="include\RayTracerState.hpp" />

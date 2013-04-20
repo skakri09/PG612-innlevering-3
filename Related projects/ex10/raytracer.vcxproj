@@ -50,13 +50,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>include;$(PG612_ASSIMP_INCLUDE_PATH);$(PG612_GLM_INCLUDE_PATH);$(PG612_DEVIL_INCLUDE_PATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;$(PG612_ASSIMP_INCLUDE_PATH);$(PG612_GLM_INCLUDE_PATH);$(PG612_DEVIL_INCLUDE_PATH);$(PG612_BOOST_INCLUDE_PATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OutDir);$(PG612_ASSIMP_LIB_PATH);$(PG612_DEVIL_LIB_PATH);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(PG612_ASSIMP_LIB_PATH);$(PG612_DEVIL_LIB_PATH);$(PG612_BOOST_LIB_PATH);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Extern.lib;Assimp.lib;DevIL.lib;ILU.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -88,6 +88,7 @@
   <ItemGroup>
     <ClInclude Include="include\CubeMap.hpp" />
     <ClInclude Include="include\FrameBuffer.hpp" />
+    <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\Ray.hpp" />
     <ClInclude Include="include\RayTracer.h" />
     <ClInclude Include="include\RayTracerState.hpp" />
