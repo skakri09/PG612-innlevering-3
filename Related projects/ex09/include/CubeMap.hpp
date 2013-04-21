@@ -95,8 +95,7 @@ private:
 	  */
 	static glm::vec3 readTexture(texture& tex, float s, float t) {
 		glm::vec3 out_color;
-		if(s < 0.0f || t < 0.0f)
-			int breakhere = 0;
+
 		float xf = std::min(s*tex.width, tex.width-1.0f);
 		float yf = std::min(t*tex.height, tex.height-1.0f);
 

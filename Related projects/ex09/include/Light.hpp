@@ -47,19 +47,47 @@ class PointLight : public LightObject
 {
 public:
 	PointLight(glm::vec3 pos=glm::vec3(0.0),
-		glm::vec3 diff=glm::vec3(0.5, 0.8, 0.1),
+		glm::vec3 diff=glm::vec3(0.5),
 		glm::vec3 spec=glm::vec3(0.5))
 		:LightObject(pos, diff, spec){
 	}
 
 	
 	float PointInShadow(const glm::vec3& point, RayTracerState& state){
-		Ray ray(point, position-point);
-		glm::vec3 ray_result = state.rayTrace(ray);
+		Ray shadow_ray(point, position-point);
+
+		const float z_offset = 10e-4f;
+		float t = -1;
+		float t_min = std::numeric_limits<float>::max();
+		int k_min=-1;
+		//Loop through all the objects, to find the closest intersection, if any
+		for (unsigned int k=0; k<state.getScene().size(); ++k) {
+			t = state.getScene().at(k)->intersect(shadow_ray);
+			
+			//skipping the cubemap
+			if(t >= (std::numeric_limits<float>::max()))
+				continue;
+			
+			if (t > z_offset && t <= t_min) {
+				k_min = k;
+				t_min = t;
+			}
+		}
+
+		if (k_min >= 0) {
+			glm::vec3 q = point + shadow_ray.getDirection()*t_min;
+			float light_length = glm::length(position-point);
+			float q_lenght = glm::length(q);
+
+			if(q_lenght < light_length)
+				return 0.1f;
+		}
+		return 1.0f;
+		//glm::vec3 ray_result = state.rayTrace(ray);
 		
-		if(ray_result == glm::vec3(0.3f))
-			return -1.0f;//no shadow
-		else return 1.0f;//full shadow
+		//if(ray_result == glm::vec3(0.3f))
+		//	return -1.0f;//no shadow
+		//else return 1.0f;//full shadow
 	}
 
 private:

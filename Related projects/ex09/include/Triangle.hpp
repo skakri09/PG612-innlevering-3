@@ -85,14 +85,14 @@ public:
 		b = glm::dot(n,dir);
 		if (fabs(b) < 0.000001f) {     // ray is  parallel to triangle plane
 			if (a == 0)                 // ray lies in triangle plane
-				return 2;
+				return 0;
 			else return -1.0f;              // ray disjoint from plane
 		}
 
 		// get intersect point of ray with triangle plane
 		q = a / b;
 		if (q < 0.0)                    // ray goes away from triangle
-			return 0;                   // => no intersect
+			return -1;                   // => no intersect
 
 		intersection_point = r.getOrigin() + q * dir; // intersect point of ray and plane
 

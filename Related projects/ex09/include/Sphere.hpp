@@ -61,7 +61,7 @@ public:
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {
 		glm::vec3 normal = computeNormal(ray, t);
-		glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
+		//glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
 
 		return effect->rayTrace(ray, t, normal, state);
 	}
