@@ -10,8 +10,7 @@
 /**
   * The plane is a scene object 
   *
-  * References: http://geomalgorithms.com/a06-_intersect-2.html
-  *				http://www.blackpawn.com/texts/pointinpoly/default.html
+  * References: Dan Sunday. 2012. http://geomalgorithms.com/a06-_intersect-2.html
   */
 class Triangle : public SceneObject {
 public:
@@ -73,30 +72,29 @@ public:
 	float intersect(const Ray& r) {
 		glm::vec3    u, v, n;              // triangle vectors
 		glm::vec3    dir, w0, w;           // ray vectors
-		float     _r, a, b;              // params to calc ray-plane intersect
+		float     q, a, b;              // params to calc ray-plane intersect
 		glm::vec3 intersection_point;
 		// get triangle edge vectors and plane normal
 		u = p1 - p0;
 		v = p2 - p0;
 		n = normal;
 		
-		dir = r.getDirection();//R.P1 - R.P0;              // ray direction vector
-		w0 = r.getOrigin() - p0;//R.P0 - T.V0;
+		dir = r.getDirection(); // ray direction vector
+		w0 = r.getOrigin() - p0;
 		a = -glm::dot(n,w0);
 		b = glm::dot(n,dir);
 		if (fabs(b) < 0.000001f) {     // ray is  parallel to triangle plane
 			if (a == 0)                 // ray lies in triangle plane
 				return 2;
-			else return 0;              // ray disjoint from plane
+			else return -1.0f;              // ray disjoint from plane
 		}
 
 		// get intersect point of ray with triangle plane
-		_r = a / b;
-		if (_r < 0.0)                    // ray goes away from triangle
+		q = a / b;
+		if (q < 0.0)                    // ray goes away from triangle
 			return 0;                   // => no intersect
-		// for a segment, also test if (r > 1.0) => no intersect
 
-		intersection_point = r.getOrigin() + _r * dir;            // intersect point of ray and plane
+		intersection_point = r.getOrigin() + q * dir; // intersect point of ray and plane
 
 		// is I inside T?
 		float    uu, uv, vv, wu, wv, D;
@@ -112,19 +110,19 @@ public:
 		float s, t;
 		s = (uv * wv - vv * wu) / D;
 		if (s < 0.0 || s > 1.0)         // I is outside T
-			return 0;
+			return -1.0f;
 		t = (uv * wu - uu * wv) / D;
 		if (t < 0.0 || (s + t) > 1.0)  // I is outside T
-			return 0;
+			return -1.0f;
 
-		return 1;                       // I is in T
+		return q;                       // I is in T
 	}	
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {
 		
 		glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
 
-		return normal;//effect->rayTrace(ray, t, normal, state);
+		return effect->rayTrace(ray, t, normal, state);
 	}
 
 protected:

@@ -10,18 +10,17 @@
 #include <IL/il.h>
 #include <IL/ilu.h>
 
+
 class CubeMap : public SceneObject {
 public:
-	CubeMap(std::string posx, std::string negx, 
-			std::string posy, std::string negy,
-			std::string posz, std::string negz) {
+	CubeMap(std::string cubemap_path) {
 		ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-		loadImage(posx, this->posx);
-		loadImage(negx, this->negx);
-		loadImage(posy, this->posy);
-		loadImage(negy, this->negy);
-		loadImage(posz, this->posz);
-		loadImage(negz, this->negz);
+		loadImage(cubemap_path+"posx.jpg", this->posx);
+		loadImage(cubemap_path+"negx.jpg", this->negx);
+		loadImage(cubemap_path+"posy.jpg", this->posy);
+		loadImage(cubemap_path+"negy.jpg", this->negy);
+		loadImage(cubemap_path+"posz.jpg", this->posz);
+		loadImage(cubemap_path+"negz.jpg", this->negz);
 	}
 	
 	/**
@@ -31,13 +30,37 @@ public:
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {
 		glm::vec3 out_color(0.0f);
 		glm::vec3 dir =  ray.getDirection();
-		
-		static int initialized=0;
-		if (!initialized) {
-			std::cerr << "The CubeMap::rayTrace(...) function is not implemented properly!" << std::endl;
-			++initialized;
+		float x = dir.x;//std::abs(dir.x);
+		float y = dir.y;//std::abs(dir.y);
+		float z = dir.z;//std::abs(dir.z);
+		if ((std::abs(dir.x) >= std::abs(dir.y)) && (std::abs(dir.x) >= std::abs(dir.z))){
+ 			if (dir.x > 0.0f){
+				float s = 0.5f-0.5f*z/x;
+				float t = 0.5f-0.5f*y/x;
+				out_color = readTexture(posx, abs(s), abs(t));
+			}
+			else{
+				float s =  0.5f*z/x-0.5f;
+				float t =  0.5f*y/x-0.5f;
+				out_color = readTexture(negx, abs(s), abs(t));
+			}
 		}
-
+		/*else if ((std::abs(dir.y) >= std::abs(dir.x)) && (std::abs(dir.y) >= std::abs(dir.z))){
+			if (dir.y > 0.0f){
+				out_color = readTexture(posy, s, t);
+			}
+			else if (dir.y < 0.0f){
+				out_color = readTexture(negy, s, t);
+			}
+		}
+		else if ((std::abs(dir.z) >= std::abs(dir.x)) && (std::abs(dir.z) >= std::abs(dir.y))){
+			if (dir.z > 0.0f){
+				out_color = readTexture(posz, s, t);
+			}
+			else if (dir.z < 0.0f){
+				out_color = readTexture(negz, s, t);
+			}
+		}*/
 		return out_color;
 	}
 	
@@ -61,7 +84,8 @@ private:
 	  */
 	static glm::vec3 readTexture(texture& tex, float s, float t) {
 		glm::vec3 out_color;
-
+		if(s < 0.0f || t < 0.0f)
+			int breakhere = 0;
 		float xf = std::min(s*tex.width, tex.width-1.0f);
 		float yf = std::min(t*tex.height, tex.height-1.0f);
 
