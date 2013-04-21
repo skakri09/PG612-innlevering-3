@@ -35,32 +35,43 @@ public:
 		float z = dir.z;//std::abs(dir.z);
 		if ((std::abs(dir.x) >= std::abs(dir.y)) && (std::abs(dir.x) >= std::abs(dir.z))){
  			if (dir.x > 0.0f){
+				/*		float t = z/x;
+				float s = y/x;*/
+
 				float s = 0.5f-0.5f*z/x;
 				float t = 0.5f-0.5f*y/x;
-				out_color = readTexture(posx, abs(s), abs(t));
+				out_color = readTexture(posx, s, t);
 			}
 			else{
-				float s =  0.5f*z/x-0.5f;
-				float t =  0.5f*y/x-0.5f;
-				out_color = readTexture(negx, abs(s), abs(t));
+				float s = 0.5f-0.5f*z/x;
+				float t =  0.5f*y/x-0.5f+1;
+				out_color = readTexture(negx, s, t);
 			}
 		}
-		/*else if ((std::abs(dir.y) >= std::abs(dir.x)) && (std::abs(dir.y) >= std::abs(dir.z))){
+		else if ((std::abs(dir.y) >= std::abs(dir.x)) && (std::abs(dir.y) >= std::abs(dir.z))){
 			if (dir.y > 0.0f){
+				float s =  0.5f*x/y-0.5f+1;
+				float t =  0.5f*z/y-0.5f+1;
 				out_color = readTexture(posy, s, t);
 			}
-			else if (dir.y < 0.0f){
+			else{
+				float s = 0.5f-0.5f*x/y;
+				float t =  0.5f*z/y-0.5f+1;
 				out_color = readTexture(negy, s, t);
 			}
 		}
-		else if ((std::abs(dir.z) >= std::abs(dir.x)) && (std::abs(dir.z) >= std::abs(dir.y))){
+		else{
 			if (dir.z > 0.0f){
+				float t = 0.5f-0.5f*y/z;
+				float s =  0.5f*x/z-0.5f+1;
 				out_color = readTexture(posz, s, t);
 			}
-			else if (dir.z < 0.0f){
-				out_color = readTexture(negz, s, t);
+			else{
+				float s =  0.5f*x/z-0.5f+1;
+				float t =  (0.5f*y/z-0.5f)+1;
+				out_color = readTexture(negz, abs(s), abs(t));
 			}
-		}*/
+		}
 		return out_color;
 	}
 	
@@ -101,7 +112,44 @@ private:
 
 		return out_color;
 	}
+	//glm::vec3 readTexture(float u, float v, int sizeU, int sizeV)
+	//{
+	//	u = abs(u);
+	//	v = abs(v);
+	//	int umin = int(sizeU * u);
+	//	int vmin = int(sizeV * v);
+	//	int umax = int(sizeU * u) + 1;
+	//	int vmax = int(sizeV * v) + 1;
+	//	float ucoef = fabsf(sizeU * u - umin);
+	//	float vcoef = fabsf(sizeV * v - vmin);
+	//
+	//	// The texture is being addressed on [0,1]
+	//	// There should be an addressing type in order to 
+	//	// determine how we should access texels when
+	//	// the coordinates are beyond those boundaries.
 
+	//	// Clamping is our current default and the only
+	//	// implemented addressing type for now.
+	//	// Clamping is done by bringing anything below zero
+	//	// to the coordinate zero
+	//	// and everything beyond one, to one.
+	//	umin = glm::min(glm::max(umin, 0), sizeU - 1);
+	//	umax = glm::min(glm::max(umax, 0), sizeU - 1);
+	//	vmin = glm::min(glm::max(vmin, 0), sizeV - 1);
+	//	vmax = glm::min(glm::max(vmax, 0), sizeV - 1);
+
+	//	// What follows is a bilinear interpolation
+	//	// along two coordinates u and v.
+
+	//	glm::vec3 output = glm::vec3( (1.0f - vcoef) * 
+	//		((1.0f - ucoef) * tab[umin  + sizeU * vmin] 
+	//	+ ucoef * tab[umax + sizeU * vmin])
+	//		+   vcoef * 
+	//		((1.0f - ucoef) * tab[umin  + sizeU * vmax] 
+
+	//	+ ucoef * tab[umax + sizeU * vmax]));
+	//	return output;
+	//}
 	/**
 	  * Loads an image into memory from file
 	  */

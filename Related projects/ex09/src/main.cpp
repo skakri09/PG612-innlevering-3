@@ -44,11 +44,11 @@ int main(int argc, char *argv[]) {
 		//	std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(-tx, ty, tz), 2.0f, phongshaded));
 		//	rt->addSceneObject(s1);
 		//}
-		std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(-3.0f, 0.0f, 3.0f), 2.0f, phongshaded));
+		std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(-3.0f, 0.0f, 3.0f), 2.0f, phong));
 		rt->addSceneObject(s1);
-		std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(1.0f, 0.0f, 2.0f), 2.0f, phongshaded));
+		std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(1.0f, 0.0f, 2.0f), 2.0f, phong));
 		rt->addSceneObject(s2);
-		std::shared_ptr<SceneObject> s3(new Sphere(glm::vec3(0.0f, 3.0f, 0.0f), 2.0f, phongshaded));
+		std::shared_ptr<SceneObject> s3(new Sphere(glm::vec3(0.0f, 3.0f, 0.0f), 2.0f, phong));
 		rt->addSceneObject(s3);
 
 		/*std::shared_ptr<SceneObject> s4(new Triangle(glm::vec3(-aspect,-2.0, 5), glm::vec3(10.0, -1.0, 0.0f),
@@ -57,10 +57,12 @@ int main(int argc, char *argv[]) {
 		//std::shared_ptr<SceneObject> s4(new Triangle(glm::vec3(-5.0, -2.0, 0.0), glm::vec3(3.0f, -1.0, 6.0f),
 		//	glm::vec3(2.5f, 0.0f, 6.0f), phongshaded));
 		//rt->addSceneObject(s4);
-		std::shared_ptr<SceneObject> s4(new Triangle(glm::vec3(-15.0, -8.0, -4.0), glm::vec3(15.0f, -8.0, -4.0f),
-			glm::vec3(0, 10.0f, -5.0f), reflect));
+		//std::shared_ptr<SceneObject> s4(new Triangle(glm::vec3(-15.0, -8.0, -4.0), glm::vec3(15.0f, -8.0, -4.0f),
+		//	glm::vec3(0, 10.0f, -5.0f), reflect));
+		//rt->addSceneObject(s4);
+		std::shared_ptr<SceneObject> s4(new Triangle(glm::vec3(-15.0, -10.0, -4.0), glm::vec3(15.0f, -10.0, -4),
+			glm::vec3(0, 10.0f, -15.0f), phongshaded));
 		rt->addSceneObject(s4);
-
 		std::shared_ptr<SceneObject> cubemap(new CubeMap("cubemaps/SaintLazarusChurch3/"));
 		rt->addSceneObject(cubemap);
 
@@ -76,5 +78,5 @@ int main(int argc, char *argv[]) {
 		std::cout << err.c_str() << std::endl;
 		return -1;
 	}
-	return 0;
+		return 0;
 }
