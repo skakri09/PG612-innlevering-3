@@ -106,25 +106,9 @@ public:
 			float specular = glm::pow( glm::max(0.0f, glm::dot(n, h)), 50.0f);
 
 			glm::vec3 new_color = glm::vec3( (diff*diffuse)+(spec*specular) ) * shadow_value ;
-			color += new_color;//glm::mix(color, new_color, 0.5f) ;
-
-
-			//for(unsigned int i = 0; i < state.getLights().size(); i++){
-			//	
-			//	float s = state.getLights().at(i)->PointInShadow(p, state);
-			//	if(s >= 0.0f)
-			//		shadefactor+=s;
-			//}
-			//if(shadefactor > 0.0f){
-			//	new_color = glm::vec3( (diff*diffuse) );
-			//	shadefactor = 0.3f;//shadefactor * 0.25f + 0.75f;
-			//}
-			//else {
-			//	
-			//	shadefactor = 1.0f;
-			//}
-			//color*=shadefactor;
+			color += new_color;
 		}
+		color/=state.getLights().size();
 		//glm::vec3 absnormal = glm::vec3(abs(normal.x),abs(normal.y),abs(normal.z)); 
 		return color;//*shadefactor;
 	}

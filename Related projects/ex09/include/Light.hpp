@@ -80,14 +80,9 @@ public:
 			float q_lenght = glm::length(q);
 
 			if(q_lenght < light_length)
-				return 0.1f;
+				return 0.0f;
 		}
 		return 1.0f;
-		//glm::vec3 ray_result = state.rayTrace(ray);
-		
-		//if(ray_result == glm::vec3(0.3f))
-		//	return -1.0f;//no shadow
-		//else return 1.0f;//full shadow
 	}
 
 private:
