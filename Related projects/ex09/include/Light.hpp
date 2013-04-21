@@ -47,7 +47,7 @@ class PointLight : public LightObject
 {
 public:
 	PointLight(glm::vec3 pos=glm::vec3(0.0),
-		glm::vec3 diff=glm::vec3(0.5),
+		glm::vec3 diff=glm::vec3(0.5, 0.8, 0.1),
 		glm::vec3 spec=glm::vec3(0.5))
 		:LightObject(pos, diff, spec){
 	}

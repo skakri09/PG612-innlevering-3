@@ -50,14 +50,29 @@ public:
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
 		glm::vec3 p = ray.getOrigin() + t*ray.getDirection();
+		
+		glm::vec3 v = glm::normalize(ray.getOrigin() - p);
+		//glm::vec3 vv = glm::normalize(ray.getDirection());
 		glm::vec3 l = glm::normalize(this->pos - p);
-		glm::vec3 h = glm::normalize(glm::normalize(ray.getDirection()) + this->pos);
-		glm::vec3 n = normal;
+		/*glm::vec3 h = glm::normalize(glm::normalize(ray.getDirection()) + this->pos);*/
+		glm::vec3 h = glm::normalize(v + l);
+		//glm::vec3 h = glm::normalize(vv + this->pos);
+		glm::vec3 n = glm::normalize(normal);
+
+		//glm::vec3 l = glm::normalize(pos - p);
+		//glm::vec3 h = glm::normalize(glm::normalize(ray.getDirection()) + l);
+		//glm::vec3 n = glm::normalize(normal);
 
 		float diffuse = glm::max(0.0f, glm::dot(n, l));
-		float specular = glm::pow( glm::max(0.0f, glm::dot(n, h)), 50.0f);
+		float specular = glm::pow( glm::max(0.0f, glm::dot(n, h)), 30.0f);
 
 		return glm::vec3( (diff*diffuse)+(spec*specular) );
+
+		//float diffuse = glm::max(0.0f, glm::dot(n, l));
+		//float specular = glm::pow( glm::max(0.0f, glm::dot(n, h)), 50.0f);
+
+		//glm::vec3 new_color = glm::vec3( (diff*diffuse)+(spec*specular) );
+
 		//return glm::vec3(abs(n.x), abs(n.y), abs(n.z));
 	}
 
@@ -86,28 +101,33 @@ public:
 			glm::vec3 diff = (*iter)->diff;
 			glm::vec3 spec = (*iter)->spec;
 
+			glm::vec3 v = glm::normalize(ray.getOrigin() - p);
 			glm::vec3 l = glm::normalize(pos - p);
-			glm::vec3 h = glm::normalize(glm::normalize(ray.getDirection()) + pos);
+			/*glm::vec3 h = glm::normalize(glm::normalize(ray.getDirection()) + pos);*/
+			glm::vec3 h = glm::normalize(v+l);
+			glm::vec3 n = glm::normalize(normal);
+
+			float diffuse = glm::max(0.0f, glm::dot(n, l));
+			float specular = glm::pow( glm::max(0.0f, glm::dot(n, h)), 50.0f);
+
 			
-
-			float diffuse = glm::max(0.0f, glm::dot(normal, l));
-			float specular = glm::pow( glm::max(0.0f, glm::dot(normal, h)), 50.0f);
-
-			glm::vec3 new_color = glm::vec3( (diff*diffuse)+(spec*specular) );
-			color = glm::mix(color, new_color, 0.5f) ;
 			float shadefactor = 0.0f;
-
+			glm::vec3 new_color;
 			for(unsigned int i = 0; i < state.getLights().size(); i++){
 				float s = state.getLights().at(i)->PointInShadow(p, state);
 				if(s >= 0.0f)
 					shadefactor+=s;
 			}
 			if(shadefactor > 0.0f){
-				shadefactor = 0.7f;//shadefactor * 0.25f + 0.75f;
+				new_color = glm::vec3( (diff*diffuse) );
+				shadefactor = 0.3f;//shadefactor * 0.25f + 0.75f;
 			}
 			else {
+				new_color = glm::vec3( (diff*diffuse)+(spec*specular) );
 				shadefactor = 1.0f;
 			}
+			
+			color += new_color;//glm::mix(color, new_color, 0.5f) ;
 			color*=shadefactor;
 		}
 		//glm::vec3 absnormal = glm::vec3(abs(normal.x),abs(normal.y),abs(normal.z)); 
