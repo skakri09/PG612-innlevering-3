@@ -11,6 +11,9 @@
 
 #include "CubeMap.hpp"
 
+/**
+* References: http://www.codermind.com/articles/Raytracer-in-C++-Part-III-Textures.html
+*/
 RayTracer::RayTracer(unsigned int width, unsigned int height) {
 	const glm::vec3 camera_position(0.0f, 0.0f, 10.0f);
 
@@ -176,6 +179,11 @@ void RayTracer::renderFrameArea( std::vector<ScreenCoord>* screen_coords,
 
 		//Now do the ray-tracing to shade the pixel
 		out_color = 0.25f*(state->rayTrace(r1)+state->rayTrace(r2)+state->rayTrace(r3)+state->rayTrace(r4));
+	/*	x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+		y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+		glm::vec3 d1 = glm::vec3(x, y, z);
+		Ray r1 = Ray(state->getCamPos(), d1);
+		out_color = state->rayTrace(r1);*/
 		fb->setPixel(i, j, out_color);
 
 		if(f >= thread_info->next_progress_target)
