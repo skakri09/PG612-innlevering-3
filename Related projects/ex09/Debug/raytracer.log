@@ -1,10 +1,12 @@
-﻿Build started 4/21/2013 10:07:21 PM.
+﻿Build started 4/22/2013 9:59:55 PM.
      1>Project "C:\PG612\PG612-innlevering-3\Related projects\ex09\raytracer.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\raytracer.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Iinclude /I"C:\libraries\i386\assimp--3.0.1270-sdk\include" /I"C:\libraries\i386\glm-0.9.4.1" /I"C:\libraries\i386\DevIL-SDK-x86-1.7.8\include" /IC:\libraries\i386\boost_1_47 /I"C:\libraries\i386\freetype-2.4.10\include" /I"C:\libraries\ffmpeg-git-a4c22e3-win32-dev\include" /IC:\libraries\i386\opencv\build\include /I"C:\libraries\i386\Detours Express 3.0\include" /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt src\main.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Iinclude /I"C:\libraries\i386\assimp--3.0.1270-sdk\include" /I"C:\libraries\i386\glm-0.9.4.1" /I"C:\libraries\i386\DevIL-SDK-x86-1.7.8\include" /IC:\libraries\i386\boost_1_47 /I"C:\libraries\i386\freetype-2.4.10\include" /I"C:\libraries\ffmpeg-git-a4c22e3-win32-dev\include" /IC:\libraries\i386\opencv\build\include /I"C:\libraries\i386\Detours Express 3.0\include" /ZI /nologo /W3 /WX- /MP /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /openmp- /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt src\RayTracer.cpp src\main.cpp
+         RayTracer.cpp
          main.cpp
+     1>c:\pg612\pg612-innlevering-3\related projects\ex09\src\raytracer.cpp(64): warning C4244: 'initializing' : conversion from 'float' to 'unsigned int', possible loss of data
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -24,4 +26,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.47
+Time Elapsed 00:00:02.70

@@ -9,7 +9,7 @@
 
 #include <IL/il.h>
 #include <IL/ilu.h>
-
+#include <boost/scoped_ptr.hpp>
 
 class CubeMap : public SceneObject {
 public:
@@ -99,17 +99,36 @@ private:
 		float xf = std::min(s*tex.width, tex.width-1.0f);
 		float yf = std::min(t*tex.height, tex.height-1.0f);
 
-		unsigned int xm = static_cast<unsigned int>(xf);
-		unsigned int ym = static_cast<unsigned int>(yf);
+		unsigned int xmax = static_cast<unsigned int>(ceil(xf));
+		unsigned int ymax = static_cast<unsigned int>(ceil(yf));
 
-		unsigned int i0 = (ym*tex.width + xm)*3;
+		unsigned int xmin = static_cast<unsigned int>(floor(xf));
+		unsigned int ymin = static_cast<unsigned int>(floor(yf));
 
-		for (int k=0; k<3; ++k) {
-			float c0 = tex.data.at(i0+k);
-			out_color[k] = c0;
-		}
+		/*unsigned int top_left = (ymin*tex.width + xmin)*3;
+		unsigned int top_right = (ymin*tex.width + xmax)*3;
+		unsigned int bottom_left = (ymax*tex.width + xmin)*3;
+		unsigned int bottom_right = (ymax*tex.width + xmax)*3;*/
+
+		std::shared_ptr<glm::vec3> top_left = texel_color( (ymin*tex.width + xmin)*3, tex);
+		std::shared_ptr<glm::vec3> top_right = texel_color( (ymin*tex.width + xmax)*3, tex);
+		std::shared_ptr<glm::vec3> bottom_left = texel_color( (ymax*tex.width + xmin)*3, tex);
+		std::shared_ptr<glm::vec3> bottom_right = texel_color( (ymax*tex.width + xmax)*3, tex);
+		float xf_remainer = xf-static_cast<float>(xmin);
+		
+		out_color = glm::mix(*top_left, *top_right, xf_remainer);
+		out_color = glm::mix(out_color, glm::mix(*bottom_left, *bottom_right, xf_remainer), yf-static_cast<float>(ymin));
+
 
 		return out_color;
+	}
+	static std::shared_ptr<glm::vec3> texel_color(unsigned int data_index, texture& tex){
+		std::shared_ptr<glm::vec3> color = std::make_shared<glm::vec3>();
+		for (int k=0; k<3; ++k) {
+			float c0 = tex.data.at(data_index+k);
+			(*color)[k] = c0;
+		}
+		return color;
 	}
 	//glm::vec3 readTexture(float u, float v, int sizeU, int sizeV)
 	//{
