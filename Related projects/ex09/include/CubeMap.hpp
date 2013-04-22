@@ -30,14 +30,11 @@ public:
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {
 		glm::vec3 out_color(0.0f);
 		glm::vec3 dir =  ray.getDirection();
-		float x = dir.x;//std::abs(dir.x);
-		float y = dir.y;//std::abs(dir.y);
-		float z = dir.z;//std::abs(dir.z);
+		float x = dir.x;
+		float y = dir.y;
+		float z = dir.z;
 		if ((std::abs(dir.x) >= std::abs(dir.y)) && (std::abs(dir.x) >= std::abs(dir.z))){
  			if (dir.x > 0.0f){
-				/*		float t = z/x;
-				float s = y/x;*/
-
 				float s = 0.5f-0.5f*z/x;
 				float t = 0.5f-0.5f*y/x;
 				out_color = readTexture(posx, s, t);
@@ -105,11 +102,6 @@ private:
 		unsigned int xmin = static_cast<unsigned int>(floor(xf));
 		unsigned int ymin = static_cast<unsigned int>(floor(yf));
 
-		/*unsigned int top_left = (ymin*tex.width + xmin)*3;
-		unsigned int top_right = (ymin*tex.width + xmax)*3;
-		unsigned int bottom_left = (ymax*tex.width + xmin)*3;
-		unsigned int bottom_right = (ymax*tex.width + xmax)*3;*/
-
 		std::shared_ptr<glm::vec3> top_left = texel_color( (ymin*tex.width + xmin)*3, tex);
 		std::shared_ptr<glm::vec3> top_right = texel_color( (ymin*tex.width + xmax)*3, tex);
 		std::shared_ptr<glm::vec3> bottom_left = texel_color( (ymax*tex.width + xmin)*3, tex);
@@ -119,9 +111,9 @@ private:
 		out_color = glm::mix(*top_left, *top_right, xf_remainer);
 		out_color = glm::mix(out_color, glm::mix(*bottom_left, *bottom_right, xf_remainer), yf-static_cast<float>(ymin));
 
-
 		return out_color;
 	}
+
 	static std::shared_ptr<glm::vec3> texel_color(unsigned int data_index, texture& tex){
 		std::shared_ptr<glm::vec3> color = std::make_shared<glm::vec3>();
 		for (int k=0; k<3; ++k) {
@@ -130,47 +122,7 @@ private:
 		}
 		return color;
 	}
-	//glm::vec3 readTexture(float u, float v, int sizeU, int sizeV)
-	//{
-	//	u = abs(u);
-	//	v = abs(v);
-	//	int umin = int(sizeU * u);
-	//	int vmin = int(sizeV * v);
-	//	int umax = int(sizeU * u) + 1;
-	//	int vmax = int(sizeV * v) + 1;
-	//	float ucoef = fabsf(sizeU * u - umin);
-	//	float vcoef = fabsf(sizeV * v - vmin);
-	//
-	//	// The texture is being addressed on [0,1]
-	//	// There should be an addressing type in order to 
-	//	// determine how we should access texels when
-	//	// the coordinates are beyond those boundaries.
-
-	//	// Clamping is our current default and the only
-	//	// implemented addressing type for now.
-	//	// Clamping is done by bringing anything below zero
-	//	// to the coordinate zero
-	//	// and everything beyond one, to one.
-	//	umin = glm::min(glm::max(umin, 0), sizeU - 1);
-	//	umax = glm::min(glm::max(umax, 0), sizeU - 1);
-	//	vmin = glm::min(glm::max(vmin, 0), sizeV - 1);
-	//	vmax = glm::min(glm::max(vmax, 0), sizeV - 1);
-
-	//	// What follows is a bilinear interpolation
-	//	// along two coordinates u and v.
-
-	//	glm::vec3 output = glm::vec3( (1.0f - vcoef) * 
-	//		((1.0f - ucoef) * tab[umin  + sizeU * vmin] 
-	//	+ ucoef * tab[umax + sizeU * vmin])
-	//		+   vcoef * 
-	//		((1.0f - ucoef) * tab[umin  + sizeU * vmax] 
-
-	//	+ ucoef * tab[umax + sizeU * vmax]));
-	//	return output;
-	//}
-	/**
-	  * Loads an image into memory from file
-	  */
+	
 	static void loadImage(std::string filename, texture& tex) {
 		ILuint ImageName;
 
