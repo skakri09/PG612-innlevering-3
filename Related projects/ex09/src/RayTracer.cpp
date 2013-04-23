@@ -135,56 +135,11 @@ void RayTracer::renderFrameArea( std::vector<ScreenCoord>* screen_coords,
 	{
 		unsigned int i = screen_coords->at(f).y;
 		unsigned int j = screen_coords->at(f).x;
-		glm::vec3 out_color(0.0, 0.0, 0.0);
-		float t = std::numeric_limits<float>::max();
-		float x, y, z;
+		//glm::vec3 out_color(0.0, 0.0, 0.0);
+		//float t = std::numeric_limits<float>::max();
+		
 
-		//// Create the ray using the view screen definition 
-		//x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-		//y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-		//z = -1.0f;
-		//glm::vec3 d1 = glm::vec3(x-0.25f, y-0.25f, z);
-		//Ray r1 = Ray(state->getCamPos(), d1);
-
-		//glm::vec3 d2 = glm::vec3(x-0.25f, y+0.25f, z);
-		//Ray r2 = Ray(state->getCamPos(), d2);
-
-		//glm::vec3 d3 = glm::vec3(x+0.25f, y+0.25f, z);
-		//Ray r3 = Ray(state->getCamPos(), d3);
-
-		//glm::vec3 d4 = glm::vec3(x+0.25f, y-0.25f, z);
-		//Ray r4 = Ray(state->getCamPos(), d4);
-		// Create the ray using the view screen definition 
-		z = -1.0f;
-
-		x = (i-0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-		y = (j-0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-		glm::vec3 d1 = glm::vec3(x, y, z);
-		Ray r1 = Ray(state->getCamPos(), d1);
-
-		x = (i-0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-		y = (j+0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-		glm::vec3 d2 = glm::vec3(x, y, z);
-		Ray r2 = Ray(state->getCamPos(), d2);
-
-		x = (i+0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-		y = (j+0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-		glm::vec3 d3 = glm::vec3(x, y, z);
-		Ray r3 = Ray(state->getCamPos(), d3);
-
-		x = (i+0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-		y = (j-0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-		glm::vec3 d4 = glm::vec3(x, y, z);
-		Ray r4 = Ray(state->getCamPos(), d4);
-
-		//Now do the ray-tracing to shade the pixel
-		out_color = 0.25f*(state->rayTrace(r1)+state->rayTrace(r2)+state->rayTrace(r3)+state->rayTrace(r4));
-	/*	x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-		y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
-		glm::vec3 d1 = glm::vec3(x, y, z);
-		Ray r1 = Ray(state->getCamPos(), d1);
-		out_color = state->rayTrace(r1);*/
-		fb->setPixel(i, j, out_color);
+		fb->setPixel(i, j, raytrace_16x_multisampled(i, j) );
 
 		if(f >= thread_info->next_progress_target)
 		{
@@ -203,4 +158,90 @@ float RayTracer::lerp( int i0, int i1, float t )
 	float v1 = (float)i1;
 
 	return v0*(1.0f-t)+v1*t;
+}
+
+const glm::vec2 RayTracer::sample_16x_values[] = {
+	glm::vec2(-0.25, 0.25), glm::vec2(-0.125, 0.25),glm::vec2(0.125, 0.25),glm::vec2(0.25, 0.25),
+	glm::vec2(-0.25, 0.125), glm::vec2(-0.125, 0.125),glm::vec2(0.125, 0.125),glm::vec2(0.25, 0.125),
+
+	glm::vec2(-0.25, -0.125), glm::vec2(-0.125, -0.125),glm::vec2(0.125, -0.125),glm::vec2(0.25, -0.125),
+	glm::vec2(-0.25, -0.25), glm::vec2(-0.125, -0.25),glm::vec2(0.125, -0.25),glm::vec2(0.25, -0.25)
+};
+const std::size_t RayTracer::sample_16x_array_length = sizeof(sample_16x_values)/sizeof(sample_16x_values[0]);
+
+glm::vec3 RayTracer::raytrace_4x_multisampled( unsigned int i, unsigned int j )
+{
+	float x, y, z;
+	z = -1.0f;
+
+	x = (i-0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	y = (j-0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	glm::vec3 d1 = glm::vec3(x, y, z);
+	Ray r1 = Ray(state->getCamPos(), d1);
+
+	x = (i-0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	y = (j+0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	glm::vec3 d2 = glm::vec3(x, y, z);
+	Ray r2 = Ray(state->getCamPos(), d2);
+
+	x = (i+0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	y = (j+0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	glm::vec3 d3 = glm::vec3(x, y, z);
+	Ray r3 = Ray(state->getCamPos(), d3);
+
+	x = (i+0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	y = (j-0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+
+	glm::vec3 d4 = glm::vec3(x, y, z);
+	Ray r4 = Ray(state->getCamPos(), d4);
+
+	//Now do the ray-tracing to shade the pixel
+	return 0.25f*(state->rayTrace(r1)+state->rayTrace(r2)+state->rayTrace(r3)+state->rayTrace(r4)) ;
+}
+
+glm::vec3 RayTracer::raytrace_1x_sampled( unsigned int i, unsigned int j )
+{
+	float x, y, z;
+	z = -1.0f;
+
+	x = i*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	y = j*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	glm::vec3 d1 = glm::vec3(x, y, z);
+	Ray r1 = Ray(state->getCamPos(), d1);
+	
+	return state->rayTrace(r1);
+}
+
+glm::vec3 RayTracer::raytrace_16x_multisampled( unsigned int i, unsigned int j )
+{
+	glm::vec3 dir(0, 0, -1.0f);
+	glm::vec3 color(0.0f);
+	//x = (i-0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	//y = (j-0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	//glm::vec3 d1 = glm::vec3(x, y, z);
+	//Ray r1 = Ray(state->getCamPos(), d1);
+
+	//x = (i-0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	//y = (j+0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	//glm::vec3 d2 = glm::vec3(x, y, z);
+	//Ray r2 = Ray(state->getCamPos(), d2);
+
+	//x = (i+0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	//y = (j+0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	//glm::vec3 d3 = glm::vec3(x, y, z);
+	//Ray r3 = Ray(state->getCamPos(), d3);
+
+	//x = (i+0.25f)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+	//y = (j-0.25f)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+	//glm::vec3 d4 = glm::vec3(x, y, z);
+	//Ray r4 = Ray(state->getCamPos(), d4);
+
+	for(std::size_t t = 0; t < sample_16x_array_length; t++){
+		dir.x = (i+sample_16x_values[t].x)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+		dir.y = (j+sample_16x_values[t].y)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+		Ray ray = Ray(state->getCamPos(), dir);
+		color+=state->rayTrace(ray);
+	}
+	//Now do the ray-tracing to shade the pixel
+	return (1.0f/sample_16x_array_length)*color;
 }

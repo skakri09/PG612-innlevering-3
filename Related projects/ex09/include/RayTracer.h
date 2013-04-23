@@ -74,6 +74,11 @@ public:
 	void renderFrameArea(std::vector<ScreenCoord>* screen_coords, 
 						unsigned int start_index, unsigned int end_index,
 						std::shared_ptr<Thread> thread_info);
+
+	glm::vec3 raytrace_16x_multisampled(unsigned int i, unsigned int j);
+	glm::vec3 raytrace_4x_multisampled(unsigned int i, unsigned int j);
+	glm::vec3 raytrace_1x_sampled(unsigned int i, unsigned int j);
+
 private:
 	std::shared_ptr<FrameBuffer> fb;
 	std::shared_ptr<RayTracerState> state;
@@ -81,6 +86,9 @@ private:
 	Screen screen;
 
 	float lerp(int i0, int i1, float t);
+
+	static const glm::vec2 sample_16x_values[];
+	static const std::size_t sample_16x_array_length;
 };
 
 #endif
