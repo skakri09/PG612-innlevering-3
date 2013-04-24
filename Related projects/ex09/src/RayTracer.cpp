@@ -139,7 +139,7 @@ void RayTracer::renderFrameArea( std::vector<ScreenCoord>* screen_coords,
 		//float t = std::numeric_limits<float>::max();
 		
 
-		fb->setPixel(i, j, raytrace_16x_multisampled(i, j) );
+		fb->setPixel(i, j, raytrace_1x_sampled(i, j) );
 
 		if(f >= thread_info->next_progress_target)
 		{
@@ -237,8 +237,8 @@ glm::vec3 RayTracer::raytrace_16x_multisampled( unsigned int i, unsigned int j )
 	//Ray r4 = Ray(state->getCamPos(), d4);
 
 	for(std::size_t t = 0; t < sample_16x_array_length; t++){
-		dir.x = (i+sample_16x_values[t].x)*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
-		dir.y = (j+sample_16x_values[t].y)*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
+		dir.x = (i+(sample_16x_values[t].x*2))*(screen.right-screen.left)/static_cast<float>(fb->getWidth()) + screen.left;
+		dir.y = (j+(sample_16x_values[t].y*2))*(screen.top-screen.bottom)/static_cast<float>(fb->getHeight()) + screen.bottom;
 		Ray ray = Ray(state->getCamPos(), dir);
 		color+=state->rayTrace(ray);
 	}
