@@ -9,19 +9,18 @@
 
 #include <IL/il.h>
 #include <IL/ilu.h>
+#include <boost/scoped_ptr.hpp>
 
 class CubeMap : public SceneObject {
 public:
-	CubeMap(std::string posx, std::string negx, 
-			std::string posy, std::string negy,
-			std::string posz, std::string negz) {
+	CubeMap(std::string cubemap_path) {
 		ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
-		loadImage(posx, this->posx);
-		loadImage(negx, this->negx);
-		loadImage(posy, this->posy);
-		loadImage(negy, this->negy);
-		loadImage(posz, this->posz);
-		loadImage(negz, this->negz);
+		loadImage(cubemap_path+"posx.jpg", this->posx);
+		loadImage(cubemap_path+"negx.jpg", this->negx);
+		loadImage(cubemap_path+"posy.jpg", this->posy);
+		loadImage(cubemap_path+"negy.jpg", this->negy);
+		loadImage(cubemap_path+"posz.jpg", this->posz);
+		loadImage(cubemap_path+"negz.jpg", this->negz);
 	}
 	
 	/**
@@ -31,9 +30,45 @@ public:
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {
 		glm::vec3 out_color(0.0f);
 		glm::vec3 dir =  ray.getDirection();
-
-		throw std::runtime_error("CubeMap::rayTrace(...) not implemented yet!");
-
+		float x = dir.x;
+		float y = dir.y;
+		float z = dir.z;
+		if ((std::abs(dir.x) >= std::abs(dir.y)) && (std::abs(dir.x) >= std::abs(dir.z))){
+ 			if (dir.x > 0.0f){
+				float s = 0.5f-0.5f*z/x;
+				float t = 0.5f-0.5f*y/x;
+				out_color = readTexture(posx, s, t);
+			}
+			else{
+				float s = 0.5f-0.5f*z/x;
+				float t =  0.5f*y/x-0.5f+1;
+				out_color = readTexture(negx, s, t);
+			}
+		}
+		else if ((std::abs(dir.y) >= std::abs(dir.x)) && (std::abs(dir.y) >= std::abs(dir.z))){
+			if (dir.y > 0.0f){
+				float s =  0.5f*x/y-0.5f+1;
+				float t =  0.5f*z/y-0.5f+1;
+				out_color = readTexture(posy, s, t);
+			}
+			else{
+				float s = 0.5f-0.5f*x/y;
+				float t =  0.5f*z/y-0.5f+1;
+				out_color = readTexture(negy, s, t);
+			}
+		}
+		else{
+			if (dir.z > 0.0f){
+				float t = 0.5f-0.5f*y/z;
+				float s =  0.5f*x/z-0.5f+1;
+				out_color = readTexture(posz, s, t);
+			}
+			else{
+				float s =  0.5f*x/z-0.5f+1;
+				float t =  (0.5f*y/z-0.5f)+1;
+				out_color = readTexture(negz, abs(s), abs(t));
+			}
+		}
 		return out_color;
 	}
 	
@@ -61,22 +96,33 @@ private:
 		float xf = std::min(s*tex.width, tex.width-1.0f);
 		float yf = std::min(t*tex.height, tex.height-1.0f);
 
-		unsigned int xm = static_cast<unsigned int>(xf);
-		unsigned int ym = static_cast<unsigned int>(yf);
+		unsigned int xmax = static_cast<unsigned int>(ceil(xf));
+		unsigned int ymax = static_cast<unsigned int>(ceil(yf));
 
-		unsigned int i0 = (ym*tex.width + xm)*3;
+		unsigned int xmin = static_cast<unsigned int>(floor(xf));
+		unsigned int ymin = static_cast<unsigned int>(floor(yf));
 
-		for (int k=0; k<3; ++k) {
-			float c0 = tex.data.at(i0+k);
-			out_color[k] = c0;
-		}
+		std::shared_ptr<glm::vec3> top_left = texel_color( (ymin*tex.width + xmin)*3, tex);
+		std::shared_ptr<glm::vec3> top_right = texel_color( (ymin*tex.width + xmax)*3, tex);
+		std::shared_ptr<glm::vec3> bottom_left = texel_color( (ymax*tex.width + xmin)*3, tex);
+		std::shared_ptr<glm::vec3> bottom_right = texel_color( (ymax*tex.width + xmax)*3, tex);
+		float xf_remainer = xf-static_cast<float>(xmin);
+		
+		out_color = glm::mix(*top_left, *top_right, xf_remainer);
+		out_color = glm::mix(out_color, glm::mix(*bottom_left, *bottom_right, xf_remainer), yf-static_cast<float>(ymin));
 
 		return out_color;
 	}
 
-	/**
-	  * Loads an image into memory from file
-	  */
+	static std::shared_ptr<glm::vec3> texel_color(unsigned int data_index, texture& tex){
+		std::shared_ptr<glm::vec3> color = std::make_shared<glm::vec3>();
+		for (int k=0; k<3; ++k) {
+			float c0 = tex.data.at(data_index+k);
+			(*color)[k] = c0;
+		}
+		return color;
+	}
+	
 	static void loadImage(std::string filename, texture& tex) {
 		ILuint ImageName;
 
