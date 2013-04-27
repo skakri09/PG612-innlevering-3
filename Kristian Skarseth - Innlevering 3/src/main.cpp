@@ -21,8 +21,8 @@ int main(int argc, char *argv[]) {
 	try {
 		RayTracer* rt;
 		Timer t;
-		unsigned int width = 1920;
-		unsigned int height = 1080;
+		unsigned int width = 800;
+		unsigned int height = 600;
 		rt = new RayTracer(width, height);
 		float aspect = width/static_cast<float>(height);
 
@@ -57,8 +57,8 @@ int main(int argc, char *argv[]) {
 		std::shared_ptr<SceneObject> s4(new Triangle(glm::vec3(-15.0, -10.0, -4.0), glm::vec3(15.0f, -10.0, -4),
 			glm::vec3(0, 10.0f, -15.0f), reflect));
 		rt->addSceneObject(s4);
-		//std::shared_ptr<SceneObject> cubemap(new CubeMap("cubemaps/SaintLazarusChurch3/"));
-		//rt->addSceneObject(cubemap);
+		std::shared_ptr<SceneObject> cubemap(new CubeMap("cubemaps/SaintLazarusChurch3/"));
+		rt->addSceneObject(cubemap);
 
 		t.restart();
 		rt->render();

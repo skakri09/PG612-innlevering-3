@@ -130,13 +130,8 @@ public:
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
 		glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
-		Ray reflected_ray(p, glm::reflect(ray.getDirection(), normal));
 
-		float dotval = glm::dot(normal, -ray.getDirection());
-		float s = 0.7f;
-		dotval = s*1.0f + (1.0f-s) * dotval;
-
-		return state.rayTrace(reflected_ray) * dotval;
+		return state.rayTrace(ray.spawn(t, glm::reflect(ray.getDirection(), normal)));
 	}
 
 
@@ -146,12 +141,42 @@ private:
 	glm::vec3 spec;
 
 };
+
+class ReflectDarkEdgesEffect : public SceneObjectEffect{
+public:
+	ReflectDarkEdgesEffect(glm::vec3 pos=glm::vec3(0.0),
+		glm::vec3 diff=glm::vec3(0.5),
+		glm::vec3 spec=glm::vec3(0.5)) {
+			this->pos = pos;
+			this->diff = diff;
+			this->spec = spec;
+	}
+
+	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
+		glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
+
+		float dotval = glm::dot(normal, -ray.getDirection());
+		float s = 0.7f;
+		dotval = s*1.0f + (1.0f-s) * dotval;
+
+		return state.rayTrace(ray.spawn(t, glm::reflect(ray.getDirection(), normal))) * dotval;
+	}
+
+
+private:
+	glm::vec3 pos;
+	glm::vec3 diff;
+	glm::vec3 spec;
+
+};
+
 enum SchlickMaterial{AIR, CARBONDIOXIDE, WATER, ETHANOL, PYREX, DIAMOND};
+
 class FresnelEffect : public SceneObjectEffect{
 public:
 	FresnelEffect(SchlickMaterial environement, SchlickMaterial object)
 	: environment_material(environement), object_material(object){
-			
+		
 	}
 	
 
