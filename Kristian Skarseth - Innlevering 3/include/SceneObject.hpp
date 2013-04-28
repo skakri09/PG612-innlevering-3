@@ -8,6 +8,10 @@
 
 #include "Ray.hpp"
 
+struct Intersection{
+	float t_in;
+	float t_out;
+};
 class RayTracerState;
 class SceneObjectEffect;
 

@@ -129,8 +129,6 @@ public:
 	}
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
-		glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
-
 		return state.rayTrace(ray.spawn(t, glm::reflect(ray.getDirection(), normal)));
 	}
 
@@ -153,8 +151,6 @@ public:
 	}
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
-		glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
-
 		float dotval = glm::dot(normal, -ray.getDirection());
 		float s = 0.7f;
 		dotval = s*1.0f + (1.0f-s) * dotval;
@@ -174,21 +170,27 @@ enum SchlickMaterial{AIR, CARBONDIOXIDE, WATER, ETHANOL, PYREX, DIAMOND};
 
 class FresnelEffect : public SceneObjectEffect{
 public:
-	FresnelEffect(SchlickMaterial environement, SchlickMaterial object)
-	: environment_material(environement), object_material(object){
-		
+	FresnelEffect(SchlickMaterial environement, SchlickMaterial object){
+		eta_environment = get_eta(environement);
+		eta_object = get_eta(object);
+		eta_in = eta_environment/eta_object;
 	}
-	
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
-		glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
-		Ray reflected_ray(p, glm::reflect(ray.getDirection(), normal));
-		
-		float dotval = glm::dot(normal, -ray.getDirection());
-		float s = 0.7f;
-		dotval = s*1.0f + (1.0f-s) * dotval;
+		float R0 = glm::pow( (eta_in-eta_out) / (eta_in+eta_out), 2.0f);
 
-		return state.rayTrace(reflected_ray) * dotval;
+		glm::vec3 ray_dir = glm::normalize(ray.getDirection());
+		glm::vec3 n_normalized = glm::normalize(normal);
+
+		glm::vec3 in_refl_dir(glm::reflect(-ray_dir, n_normalized));
+		glm::vec3 in_refract_dir(glm::refract(-ray_dir, n_normalized, eta_in));
+		
+		float in_fresnel = R0 + (1.0-R0)*glm::pow((1.0-glm::dot(ray_dir, n_normalized)), 5.0);
+
+		glm::vec3 reflect = state.rayTrace(ray.spawn(t, in_refl_dir));
+		glm::vec3 refract = state.rayTrace(ray.spawn(t, in_refract_dir));
+
+		return glm::mix(reflect, refract, in_fresnel);
 	}
 
 
@@ -200,7 +202,21 @@ private:
 	static const float eta_pyrex;
 	static const float eta_diamond;
 
-	SchlickMaterial environment_material, object_material;
+	static float get_eta(SchlickMaterial material){
+		switch(material){
+		case AIR: return AIR; break;
+		case WATER: return eta_water; break;
+		case PYREX: return eta_pyrex; break;
+		case ETHANOL: return eta_ethanol; break;
+		case DIAMOND: return eta_diamond; break;
+		case CARBONDIOXIDE: return eta_carbondioxide; break;
+		default: return eta_air;
+		}
+	}
+
+	float eta_environment;
+	float eta_object;
+	float eta_in, eta_out;
 };
 
 const float FresnelEffect::eta_air = 1.000293f;

@@ -1,0 +1,5 @@
+Prøv ut optimized sphere collision equation fra real time redering boka.
+
+Fresnel:
+l = -ray.getdirection();
+reflect vector = 2(n dot l)n - l 
