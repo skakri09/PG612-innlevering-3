@@ -102,25 +102,22 @@ private:
 		unsigned int xmin = static_cast<unsigned int>(floor(xf));
 		unsigned int ymin = static_cast<unsigned int>(floor(yf));
 
-		std::shared_ptr<glm::vec3> top_left = texel_color( (ymin*tex.width + xmin)*3, tex);
-		std::shared_ptr<glm::vec3> top_right = texel_color( (ymin*tex.width + xmax)*3, tex);
-		std::shared_ptr<glm::vec3> bottom_left = texel_color( (ymax*tex.width + xmin)*3, tex);
-		std::shared_ptr<glm::vec3> bottom_right = texel_color( (ymax*tex.width + xmax)*3, tex);
-		float xf_remainer = xf-static_cast<float>(xmin);
+		unsigned int tl_coord = (ymin*tex.width + xmin)*3;
+		unsigned int tr_coord = (ymin*tex.width + xmax)*3;
+		unsigned int bl_coord = (ymax*tex.width + xmin)*3;
+		unsigned int br_coord = (ymax*tex.width + xmax)*3;
+
+		glm::vec3 top_left(tex.data.at(tl_coord),tex.data.at(tl_coord+1),tex.data.at(tl_coord+2));
+		glm::vec3 top_right(tex.data.at(tr_coord),tex.data.at(tr_coord+1),tex.data.at(tr_coord+2));
+		glm::vec3 bottom_left(tex.data.at(bl_coord),tex.data.at(bl_coord+1),tex.data.at(bl_coord+2));
+		glm::vec3 bottom_right(tex.data.at(br_coord),tex.data.at(br_coord+1),tex.data.at(br_coord+2));
 		
-		out_color = glm::mix(*top_left, *top_right, xf_remainer);
-		out_color = glm::mix(out_color, glm::mix(*bottom_left, *bottom_right, xf_remainer), yf-static_cast<float>(ymin));
+		float xf_remainer = xf-xmin;
+		
+		out_color = glm::mix(top_left, top_right, xf_remainer);
+		out_color = glm::mix(out_color, glm::mix(bottom_left, bottom_right, xf_remainer), yf-ymin);
 
 		return out_color;
-	}
-
-	static std::shared_ptr<glm::vec3> texel_color(unsigned int data_index, texture& tex){
-		std::shared_ptr<glm::vec3> color = std::make_shared<glm::vec3>();
-		for (int k=0; k<3; ++k) {
-			float c0 = tex.data.at(data_index+k);
-			(*color)[k] = c0;
-		}
-		return color;
 	}
 	
 	static void loadImage(std::string filename, texture& tex) {
