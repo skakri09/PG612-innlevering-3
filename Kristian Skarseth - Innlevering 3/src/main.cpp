@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 
 
 		
-		std::shared_ptr<SceneObject> cubemap(new CubeMap("cubemaps/SaintLazarusChurch3/"));
+		std::shared_ptr<SceneObject> cubemap(new CubeMap("cubemaps/SwedishRoyalCastle/"));
 		rt->addSceneObject(cubemap);
 		
 		//std::shared_ptr<SceneObject> triangle(new Triangle(glm::vec3(-15.0, -10.0, -4.0), glm::vec3(15.0f, -10.0, -4),
