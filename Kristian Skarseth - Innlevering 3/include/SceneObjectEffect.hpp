@@ -197,7 +197,7 @@ public:
 			return glm::mix(refract, reflect, fresnel);
 		}
 		else {
-			//return state.rayTrace(ray.spawn(t, ray.getDirection()));
+			return state.rayTrace(ray.spawn(t, ray.getDirection()));
 			float R0 = glm::pow( (eta_out-eta_in) / (eta_out+eta_in), 2.0f);
 
 			glm::vec3 n = glm::normalize(normal);

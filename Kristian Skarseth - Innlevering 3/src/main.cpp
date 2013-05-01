@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 		std::shared_ptr<SceneObjectEffect> phong(new PhongEffect(glm::vec3(-5.0, 0.0, 9.0)));
 		std::shared_ptr<SceneObjectEffect> reflect(new ReflectEffect(glm::vec3(0.0, 0.0, 10.0)));
 		std::shared_ptr<SceneObjectEffect> phongshaded(new ShadedPhongEffect());
-		std::shared_ptr<SceneObjectEffect> fresnel(new FresnelEffect(AIR,AIR));
+		std::shared_ptr<SceneObjectEffect> fresnel(new FresnelEffect(AIR, PYREX));
 	
 		std::shared_ptr<LightObject> light1(new PointLight(glm::vec3(-5.0f, 0.0f, 9.0f)));
 		rt->addLightSource(light1);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
 		//std::shared_ptr<SceneObject> s4(new Sphere(glm::vec3(-7.0f, -4.0f, 0.0f), 2.0f, fresnel));
 		//rt->addSceneObject(s4);
-		std::shared_ptr<SceneObject> s5(new Sphere(glm::vec3(6.0f, 7.0f, 0.0f), 5.0f, fresnel));
+		std::shared_ptr<SceneObject> s5(new Sphere(glm::vec3(6.0f, 2.0f, 0.0f), 3.0f, fresnel));
 		rt->addSceneObject(s5);
 		
 		t.restart();
