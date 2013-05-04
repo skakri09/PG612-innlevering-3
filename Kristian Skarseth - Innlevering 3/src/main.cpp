@@ -21,8 +21,8 @@ int main(int argc, char *argv[]) {
 	try {
 		RayTracer* rt;
 		Timer t;
-		unsigned int width = 1920;
-		unsigned int height = 1080;
+		unsigned int width = 1280;
+		unsigned int height = 720;
 		rt = new RayTracer(width, height);
 		float aspect = width/static_cast<float>(height);
 
@@ -49,8 +49,6 @@ int main(int argc, char *argv[]) {
 			rt->addSceneObject(s1);
 		}*/
 
-
-		
 		std::shared_ptr<SceneObject> cubemap(new CubeMap("cubemaps/SaintLazarusChurch3/"));
 		rt->addSceneObject(cubemap);
 		
@@ -60,14 +58,14 @@ int main(int argc, char *argv[]) {
 		
 		std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(-3.0f, 0.0f, 3.0f), 2.0f, fresnel));
 		rt->addSceneObject(s1);
-		std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(1.0f, 0.0f, 2.0f), 2.0f, reflect));
-		rt->addSceneObject(s2);
+		/*std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(1.0f, 0.0f, 2.0f), 2.0f, reflect));
+		rt->addSceneObject(s2);*/
 		//std::shared_ptr<SceneObject> s3(new Sphere(glm::vec3(0.0f, 3.0f, 0.0f), 2.0f, fresnel));
 		//rt->addSceneObject(s3);
 
 		//std::shared_ptr<SceneObject> s4(new Sphere(glm::vec3(-7.0f, -4.0f, 0.0f), 2.0f, fresnel));
 		//rt->addSceneObject(s4);
-		std::shared_ptr<SceneObject> s5(new Sphere(glm::vec3(6.0f, 2.0f, 0.0f), 3.0f, fresnel));
+		std::shared_ptr<SceneObject> s5(new Sphere(glm::vec3(6.0f, -4.0f, 0.0f), 3.0f, fresnel));
 		rt->addSceneObject(s5);
 		
 		t.restart();

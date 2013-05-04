@@ -179,8 +179,9 @@ public:
 	}
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
-
-		if(glm::dot(ray.getDirection(), normal) < 0.0f){
+		
+		float dot_product = glm::dot(ray.getDirection(), normal);
+		if(dot_product < 0.0f){
 			//float R0 = glm::pow( (eta_in-eta_out) / (eta_in+eta_out), 2.0f);
 			float R0 = glm::pow( (eta_object-eta_environment) / (eta_object+eta_environment), 2.0f);
 			
@@ -188,34 +189,34 @@ public:
 			glm::vec3 v = glm::normalize(ray.getDirection());
 
 			glm::vec3 refl_dir(glm::reflect(v, n));
-			glm::vec3 refract_dir(glm::refract(v, n, eta_in));
+			//glm::vec3 refract_dir(glm::refract(v, n, eta_in));
+			glm::vec3 refract_dir = refract(n, v, eta_in);
 
 			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
 			
 			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
 
-			//float w = eta
-			//glm::vec3 refract_dir_test = 
 			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
-			//return refract;
-			return glm::mix(refract, reflect, fresnel);
+
+			return glm::mix(reflect, refract, fresnel);
 		}
 		else {
-			//return state.rayTrace(ray.spawn(t, ray.getDirection()));
+			return state.rayTrace(ray.spawn(t, ray.getDirection()));
 			float R0 = glm::pow( (eta_environment-eta_object) / (eta_environment+eta_object), 2.0f);
 
 			glm::vec3 n = glm::normalize(normal);
 			glm::vec3 v = glm::normalize(ray.getDirection());
 
-			glm::vec3 refl_dir(glm::reflect(v, n));
-			glm::vec3 refract_dir(glm::refract(v, n, eta_out));
+			//glm::vec3 refl_dir(glm::reflect(v, -n));
+			glm::vec3 refract_dir = refract(n, v, eta_out);//(glm::refract(v, n, eta_out));
 
-			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
+			//float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, -n)), 5.0f);
 
-			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
-			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
-
-			return glm::mix(refract, reflect, fresnel);
+			//glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
+			//glm::vec3 refract = 
+			return state.rayTrace(ray.spawn(t, refract_dir));
+			//return reflect;
+			//return glm::mix(refract, reflect, fresnel);
 		}
 	}
 
@@ -238,6 +239,11 @@ private:
 		case CARBONDIOXIDE: return eta_carbondioxide; break;
 		default: return eta_air;
 		}
+	}
+	static glm::vec3 refract(glm::vec3& n, glm::vec3& l, float eta){
+		float w = eta*(glm::dot(l, n));
+		float k = sqrt(1.0f+(w-eta)*(w+eta));
+		return glm::normalize(glm::vec3 ((w-k)*n - (eta*l)));
 	}
 
 	float eta_environment;
