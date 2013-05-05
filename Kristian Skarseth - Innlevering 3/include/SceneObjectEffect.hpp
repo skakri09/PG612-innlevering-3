@@ -184,7 +184,12 @@ public:
 		if(dot_product < 0.0f){
 			//float R0 = glm::pow( (eta_in-eta_out) / (eta_in+eta_out), 2.0f);
 			float R0 = glm::pow( (eta_object-eta_environment) / (eta_object+eta_environment), 2.0f);
-			
+			if(R0 <= 0.001f){
+				int teastbreak = 0;
+			}
+			else{
+				int teastbreak = 0;
+			}
 			glm::vec3 n = glm::normalize(normal);
 			glm::vec3 v = glm::normalize(ray.getDirection());
 
@@ -193,29 +198,41 @@ public:
 			glm::vec3 refract_dir = refract(n, v, eta_in);
 
 			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
-			
+			if(fresnel < 0.0f)
+				fresnel = 0.0f;
+			else if(fresnel > 1.0f)
+				fresnel = 1.0f;
 			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
 
 			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
 
-			return glm::mix(reflect, refract, fresnel);
+			return glm::mix(refract, reflect, fresnel);
 		}
 		else {
-			return state.rayTrace(ray.spawn(t, ray.getDirection()));
+			//return state.rayTrace(ray.spawn(t, ray.getDirection()));
 			float R0 = glm::pow( (eta_environment-eta_object) / (eta_environment+eta_object), 2.0f);
-
-			glm::vec3 n = glm::normalize(normal);
-			glm::vec3 v = glm::normalize(ray.getDirection());
+			if(R0 <= 0.001f){
+				int teastbreak = 0;
+			}
+			else{
+				int teastbreak = 0;
+			}
+			glm::vec3 n = normal;//glm::normalize(normal);
+			glm::vec3 v = ray.getDirection();//glm::normalize(ray.getDirection());
 
 			//glm::vec3 refl_dir(glm::reflect(v, -n));
-			glm::vec3 refract_dir = refract(n, v, eta_out);//(glm::refract(v, n, eta_out));
+			//glm::vec3 refract_dir(glm::refract(v, -n, eta_out));
+			glm::vec3 refract_dir = refract(-n, v, eta_out);
 
-			//float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, -n)), 5.0f);
-
+			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
+			if(fresnel < 0.0f)
+				fresnel = 0.0f;
+			else if(fresnel > 1.0f)
+				fresnel = 1.0f;
 			//glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
-			//glm::vec3 refract = 
-			return state.rayTrace(ray.spawn(t, refract_dir));
+			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
 			//return reflect;
+			return refract;
 			//return glm::mix(refract, reflect, fresnel);
 		}
 	}

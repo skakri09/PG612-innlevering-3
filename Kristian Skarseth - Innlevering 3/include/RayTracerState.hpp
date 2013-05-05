@@ -35,8 +35,9 @@ public:
 		float t_min = std::numeric_limits<float>::max();
 		int k_min=-1;
 
-		if (!ray.isValid()) return glm::vec3(0.0f);
-
+		/*if (!ray.isValid()) {
+			return glm::vec3(0.0f);
+		}*/
 		//Loop through all the objects, to find the closest intersection, if any
 		//This is essentially just ray-casting
 		for (unsigned int k=0; k<scene.size(); ++k) {
@@ -53,7 +54,9 @@ public:
 			return scene.at(k_min)->rayTrace(ray, t_min, *this);
 		}
 		else {
-			return glm::vec3(0.3f);
+			//This should not be able to happen since we have a cubemap,
+			//but it's there just in case anyway.
+			return glm::vec3(0); 
 		}
 	}
 
