@@ -11,6 +11,15 @@
 #include <IL/ilu.h>
 #include <boost/scoped_ptr.hpp>
 
+namespace cubemap{
+	static const std::string SaintLazarusChurch = "cubemaps/SaintLazarusChurch3/";
+	static const std::string Desert = "cubemaps/Desert/";
+	static const std::string Park = "cubemaps/Park/";
+	static const std::string Vasa = "cubemaps/Vasa/";
+	static const std::string Spacebox = "cubemaps/Spacebox/";
+	static const std::string SwedishRoyalCastle = "cubemaps/SwedishRoyalCastle/";
+	static const std::string Creek = "cubemaps/Creek/";
+}
 class CubeMap : public SceneObject {
 public:
 	CubeMap(std::string cubemap_path) {

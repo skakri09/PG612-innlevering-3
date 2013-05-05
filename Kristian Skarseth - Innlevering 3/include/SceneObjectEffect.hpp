@@ -178,62 +178,57 @@ public:
 		eta_out = eta_object/eta_environment;
 	}
 
+	FresnelEffect(float environement, float object)
+	{
+		eta_environment = environement;
+		eta_object = object;
+		eta_in = eta_environment/eta_object;
+		eta_out = eta_object/eta_environment;
+	}
+
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
-		
-		float dot_product = glm::dot(ray.getDirection(), normal);
+
+		float dot_product = glm::dot(normal, ray.getDirection());
 		if(dot_product < 0.0f){
 			//float R0 = glm::pow( (eta_in-eta_out) / (eta_in+eta_out), 2.0f);
 			float R0 = glm::pow( (eta_object-eta_environment) / (eta_object+eta_environment), 2.0f);
-			if(R0 <= 0.001f){
-				int teastbreak = 0;
-			}
-			else{
-				int teastbreak = 0;
-			}
+
 			glm::vec3 n = glm::normalize(normal);
 			glm::vec3 v = glm::normalize(ray.getDirection());
 
-			glm::vec3 refl_dir(glm::reflect(v, n));
+			//glm::vec3 refl_dir(glm::reflect(v, n));
+			glm::vec3 refl_dir = reflect(n, v);
+
 			//glm::vec3 refract_dir(glm::refract(v, n, eta_in));
 			glm::vec3 refract_dir = refract(n, v, eta_in);
 
 			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
-			if(fresnel < 0.0f)
-				fresnel = 0.0f;
-			else if(fresnel > 1.0f)
-				fresnel = 1.0f;
+
 			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
-
+			//return reflect;
 			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
-
-			return glm::mix(refract, reflect, fresnel);
+			//return refract;
+			glm::vec3 out_color = glm::mix(refract, reflect, fresnel);
+			return out_color;
 		}
 		else {
-			//return state.rayTrace(ray.spawn(t, ray.getDirection()));
+			return state.rayTrace(ray.spawn(t, ray.getDirection()));
 			float R0 = glm::pow( (eta_environment-eta_object) / (eta_environment+eta_object), 2.0f);
-			if(R0 <= 0.001f){
-				int teastbreak = 0;
-			}
-			else{
-				int teastbreak = 0;
-			}
+
 			glm::vec3 n = normal;//glm::normalize(normal);
 			glm::vec3 v = ray.getDirection();//glm::normalize(ray.getDirection());
 
-			//glm::vec3 refl_dir(glm::reflect(v, -n));
+			glm::vec3 refl_dir(glm::reflect(v, -n));
 			//glm::vec3 refract_dir(glm::refract(v, -n, eta_out));
 			glm::vec3 refract_dir = refract(-n, v, eta_out);
 
 			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
-			if(fresnel < 0.0f)
-				fresnel = 0.0f;
-			else if(fresnel > 1.0f)
-				fresnel = 1.0f;
-			//glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
+
+			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
 			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
 			//return reflect;
-			return refract;
-			//return glm::mix(refract, reflect, fresnel);
+			//return refract;
+			return glm::mix(refract, reflect, fresnel);
 		}
 	}
 
@@ -257,10 +252,15 @@ private:
 		default: return eta_air;
 		}
 	}
-	static glm::vec3 refract(glm::vec3& n, glm::vec3& l, float eta){
-		float w = eta*(glm::dot(l, n));
+	
+	static inline glm::vec3 refract(glm::vec3& normal, glm::vec3& ray_dir, float eta){
+		float w = eta*(glm::dot(-ray_dir, normal));
 		float k = sqrt(1.0f+(w-eta)*(w+eta));
-		return glm::normalize(glm::vec3 ((w-k)*n - (eta*l)));
+		return glm::normalize(glm::vec3( (w-k)*normal - (eta*(-ray_dir)) ) );
+	}
+
+	static inline glm::vec3 reflect(glm::vec3& normal, glm::vec3& ray_dir){
+		return glm::vec3( 2 * glm::dot( normal, -ray_dir) * normal - (-ray_dir));
 	}
 
 	float eta_environment;

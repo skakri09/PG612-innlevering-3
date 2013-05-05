@@ -13,6 +13,7 @@ public:
 		this->origin = origin;
 		this->direction = direction;
 		depth = 0;
+		color_contribution = 1.0f;
 	}
 
 	/**
@@ -39,8 +40,9 @@ public:
 	  * Tests whether or not this ray should be raytraced further
 	  */
 	inline bool isValid() const {
-		return (depth <= max_depth);
+		return (color_contribution > 0.002f);
 	}
+
 
 	/**
 	  * Invalidate ray, saying it should not be raytraced further
@@ -51,7 +53,7 @@ public:
 
 private:
 	friend class RayTracer;
-
+	float color_contribution;
 	static const unsigned int max_depth = 7;
 	unsigned int depth;
 	glm::vec3 origin;

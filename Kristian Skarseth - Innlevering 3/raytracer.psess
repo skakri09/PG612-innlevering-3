@@ -49,7 +49,7 @@
   </PostinstrumentEvent>
   <Binaries>
     <ProjBinary>
-      <Path>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\Debug\raytracer.exe</Path>
+      <Path>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\Release\raytracer.exe</Path>
       <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
       <Instrument>true</Instrument>
       <Sample>true</Sample>
@@ -59,7 +59,7 @@
       <LaunchProject>true</LaunchProject>
       <OverrideProjectSettings>false</OverrideProjectSettings>
       <LaunchMethod>Executable</LaunchMethod>
-      <ExecutablePath>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\Debug\raytracer.exe</ExecutablePath>
+      <ExecutablePath>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\Release\raytracer.exe</ExecutablePath>
       <StartupDirectory>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\</StartupDirectory>
       <Arguments />
       <NetAppHost>IIS</NetAppHost>
@@ -79,7 +79,10 @@
   </Binaries>
   <Reports>
     <Report>
-      <Path>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\raytracer130428.vsp</Path>
+      <Path>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\raytracer130505.vsp</Path>
+    </Report>
+    <Report>
+      <Path>C:\PG612\PG612-innlevering-3\Kristian Skarseth - Innlevering 3\raytracer130505(1).vsp</Path>
     </Report>
   </Reports>
   <Launches>

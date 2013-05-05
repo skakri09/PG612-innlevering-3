@@ -70,7 +70,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>include;$(PG612_ASSIMP_INCLUDE_PATH);$(PG612_GLM_INCLUDE_PATH);$(PG612_DEVIL_INCLUDE_PATH);$(PG612_BOOST_INCLUDE_PATH);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <OpenMPSupport>false</OpenMPSupport>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,6 +92,7 @@
     <ClInclude Include="include\Ray.hpp" />
     <ClInclude Include="include\RayTracer.h" />
     <ClInclude Include="include\RayTracerState.hpp" />
+    <ClInclude Include="include\RefractionIndices.h" />
     <ClInclude Include="include\SceneObject.hpp" />
     <ClInclude Include="include\SceneObjectEffect.hpp" />
     <ClInclude Include="include\Sphere.hpp" />
