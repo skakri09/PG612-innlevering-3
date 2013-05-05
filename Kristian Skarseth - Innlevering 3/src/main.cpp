@@ -52,9 +52,9 @@ int main(int argc, char *argv[]) {
 		std::shared_ptr<SceneObject> cubemap(new CubeMap(cubemap::SaintLazarusChurch));
 		rt->addSceneObject(cubemap);
 		
-		//std::shared_ptr<SceneObject> triangle(new Triangle(glm::vec3(-15.0, -10.0, -4.0), glm::vec3(15.0f, -10.0, -4),
-		//glm::vec3(0, 10.0f, -15.0f), reflect));
-		//rt->addSceneObject(triangle);
+		std::shared_ptr<SceneObject> triangle(new Triangle(glm::vec3(-15.0, -10.0, -4.0), glm::vec3(15.0f, -10.0, -4),
+		glm::vec3(0, 10.0f, -15.0f), reflect));
+		rt->addSceneObject(triangle);
 		
 		//std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(0.0f, 0.0f, 3.0f), 2.0f, fresnel));
 		//rt->addSceneObject(s1);

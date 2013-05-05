@@ -9,11 +9,11 @@
   */
 class Ray {
 public:
-	Ray(glm::vec3 origin, glm::vec3 direction) {
+	Ray(glm::vec3 origin, glm::vec3 direction, float color_contribution = 1.0f) {
 		this->origin = origin;
 		this->direction = direction;
 		depth = 0;
-		color_contribution = 1.0f;
+		this->color_contribution = color_contribution;
 	}
 
 	/**
@@ -30,8 +30,8 @@ public:
 	  * Spanws a new ray from this ray originating from getOrigin() + t*getDirection() 
 	  * going in the direction of d
 	  */
-	inline Ray spawn(float t, glm::vec3 d) const {
-		Ray r(getOrigin()+t*getDirection(), d);
+	inline Ray spawn(float t, glm::vec3 d, float color_contribution) const {
+		Ray r(getOrigin()+t*getDirection(), d, color_contribution);
 		r.depth = this->depth + 1;
 		return r;
 	}
