@@ -126,10 +126,11 @@ public:
 			this->pos = pos;
 			this->diff = diff;
 			this->spec = spec;
+			absorb_amount = 0.05f;
 	}
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
-		return state.rayTrace(ray.spawn(t, glm::reflect(ray.getDirection(), normal)));
+		return state.rayTrace(ray.spawn(t, glm::reflect(ray.getDirection(), normal), ray.getColorContribution() - absorb_amount));
 	}
 
 
@@ -137,7 +138,7 @@ private:
 	glm::vec3 pos;
 	glm::vec3 diff;
 	glm::vec3 spec;
-
+	float absorb_amount;
 };
 
 class ReflectDarkEdgesEffect : public SceneObjectEffect{
@@ -148,6 +149,7 @@ public:
 			this->pos = pos;
 			this->diff = diff;
 			this->spec = spec;
+			absorb_amount = 0.05f;
 	}
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
@@ -155,7 +157,7 @@ public:
 		float s = 0.7f;
 		dotval = s*1.0f + (1.0f-s) * dotval;
 
-		return state.rayTrace(ray.spawn(t, glm::reflect(ray.getDirection(), normal))) * dotval;
+		return state.rayTrace(ray.spawn(t, glm::reflect(ray.getDirection(), normal), ray.getColorContribution() - absorb_amount)) * dotval;
 	}
 
 
@@ -163,7 +165,7 @@ private:
 	glm::vec3 pos;
 	glm::vec3 diff;
 	glm::vec3 spec;
-
+	float absorb_amount;
 };
 
 enum SchlickMaterial{AIR, CARBONDIOXIDE, WATER, ETHANOL, PYREX, DIAMOND};
@@ -203,16 +205,18 @@ public:
 			glm::vec3 refract_dir = refract(n, v, eta_in);
 
 			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
+			float reflect_contribution = ray.getColorContribution()*fresnel;
+			float refract_contribution = ray.getColorContribution()*(1.0f-fresnel);
 
-			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
+			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir, reflect_contribution));
 			//return reflect;
-			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
+			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir, refract_contribution));
 			//return refract;
 			glm::vec3 out_color = glm::mix(refract, reflect, fresnel);
 			return out_color;
 		}
 		else {
-			return state.rayTrace(ray.spawn(t, ray.getDirection()));
+			return state.rayTrace(ray.spawn(t, ray.getDirection(), ray.getColorContribution()));
 			float R0 = glm::pow( (eta_environment-eta_object) / (eta_environment+eta_object), 2.0f);
 
 			glm::vec3 n = normal;//glm::normalize(normal);
@@ -223,9 +227,11 @@ public:
 			glm::vec3 refract_dir = refract(-n, v, eta_out);
 
 			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
+			float reflect_contribution = ray.getColorContribution()*fresnel;
+			float refract_contribution = ray.getColorContribution()*(1.0f-fresnel);
 
-			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir));
-			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir));
+			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir, reflect_contribution));
+			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir, refract_contribution));
 			//return reflect;
 			//return refract;
 			return glm::mix(refract, reflect, fresnel);

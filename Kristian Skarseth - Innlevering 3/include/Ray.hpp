@@ -27,6 +27,11 @@ public:
 	inline const glm::vec3& getDirection() const { return direction; }
 
 	/**
+	* Returns the final color contribution value of this ray
+	*/
+	inline float getColorContribution(){return color_contribution;}
+
+	/**
 	  * Spanws a new ray from this ray originating from getOrigin() + t*getDirection() 
 	  * going in the direction of d
 	  */
@@ -40,7 +45,7 @@ public:
 	  * Tests whether or not this ray should be raytraced further
 	  */
 	inline bool isValid() const {
-		return (color_contribution > 0.002f);
+		return (color_contribution > 0.02f);
 	}
 
 
@@ -54,6 +59,7 @@ public:
 private:
 	friend class RayTracer;
 	float color_contribution;
+
 	static const unsigned int max_depth = 7;
 	unsigned int depth;
 	glm::vec3 origin;
