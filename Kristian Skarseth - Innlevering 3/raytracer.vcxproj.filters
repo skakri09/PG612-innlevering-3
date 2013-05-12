@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Objects and Environment">
+      <UniqueIdentifier>{2a530643-8fae-440d-8dbb-23bcaebe4a3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Effects">
+      <UniqueIdentifier>{8d153510-3e58-483f-bbfb-5255a8e5c691}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -32,32 +38,53 @@
     <ClInclude Include="include\Ray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\SceneObject.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CubeMap.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\RayTracerState.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Sphere.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\SceneObjectEffect.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Light.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Triangle.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\RefractionIndices.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Sphere.hpp">
+      <Filter>Header Files\Objects and Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Triangle.hpp">
+      <Filter>Header Files\Objects and Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CubeMap.hpp">
+      <Filter>Header Files\Objects and Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light.hpp">
+      <Filter>Header Files\Objects and Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SceneObject.hpp">
+      <Filter>Header Files\Objects and Environment</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SceneObjectEffect.hpp">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShadedPhongEffect.hpp">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ReflectEffectDarkEdges.hpp">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ReflectEffect.hpp">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FresnelEffect.hpp">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PhongEffect.hpp">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ColorEffect.hpp">
+      <Filter>Header Files\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Plane.hpp">
+      <Filter>Header Files\Objects and Environment</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

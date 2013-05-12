@@ -51,7 +51,31 @@ public:
 			return -1;
 		}
 	}	
-	
+	//float intersect(const Ray& r) {
+	//	glm::vec3 c = p;
+	//	glm::vec3 o = r.getOrigin();
+	//	glm::vec3 d = r.getDirection();
+
+	//	glm::vec3 l = c - o;
+	//	float s = glm::dot(l, d);
+	//	float l_length = glm::dot(l, l);
+	//	float r_squared = this->r*this->r;
+	//	float t;
+	//	if(s < 0.0f && l_length > r_squared)
+	//		return -1.0f;
+	//	
+	//	float m_squared = l_length - (s*s);
+	//	
+	//	if(m_squared > r_squared)
+	//		return -1.0f;
+
+	//	float q = glm::sqrt(r_squared - m_squared);
+	//	if(l_length > r_squared)
+	//		t = s - q;
+	//	else
+	//		t = s + q;
+	//	return t;
+	//}	
 	/**
 	  * Computes normal for an intersection point on a sphere
 	  */
@@ -61,7 +85,6 @@ public:
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {
 		glm::vec3 normal = computeNormal(ray, t);
-		//glm::vec3 p = ray.getOrigin() + (t*ray.getDirection());
 
 		return effect->rayTrace(ray, t, normal, state);
 	}

@@ -45,7 +45,8 @@ public:
 	  * Tests whether or not this ray should be raytraced further
 	  */
 	inline bool isValid() const {
-		return (color_contribution > 0.02f);
+		//return (color_contribution > 0.002f);
+		return (depth < max_depth);
 	}
 
 
