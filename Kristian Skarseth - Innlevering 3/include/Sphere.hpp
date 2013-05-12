@@ -76,9 +76,10 @@ public:
 	//		t = s + q;
 	//	return t;
 	//}	
+
 	/**
-	  * Computes normal for an intersection point on a sphere
-	  */
+	* Computes normal for an intersection point on a sphere
+	*/
 	const glm::vec3 computeNormal(const Ray& r, const float& t) {
 		return glm::vec3( ( (r.getOrigin() + t*r.getDirection()) - this->p) / this->r);
 	}

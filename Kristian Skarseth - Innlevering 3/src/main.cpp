@@ -14,6 +14,7 @@
 #include "Light.hpp"
 #include "CubeMap.hpp"
 #include "Triangle.hpp"
+#include "SizedPlane.hpp"
 
 #include "PhongEffect.hpp"
 #include "ColorEffect.hpp"
@@ -29,8 +30,8 @@ int main(int argc, char *argv[]) {
 	try {
 		RayTracer* rt;
 		Timer t;
-		unsigned int width = 8000;
-		unsigned int height = 5000;
+		unsigned int width = 4000;
+		unsigned int height = 3000;
 		rt = new RayTracer(width, height);
 		float aspect = width/static_cast<float>(height);
 
@@ -60,13 +61,21 @@ int main(int argc, char *argv[]) {
 		std::shared_ptr<SceneObject> cubemap(new CubeMap(cubemap::SaintLazarusChurch));
 		rt->addSceneObject(cubemap);
 		
+		std::shared_ptr<SceneObject> myplane(new SizedPlane(
+			glm::vec3(-1.0f, -5.0f, 5.0f),
+			glm::vec3(8.0f, -5.0f, 5.0f),
+			glm::vec3(8.0f, -5.0f, -30.0f),
+			glm::vec3(-30.0f, -5.0f, -30.0f), phongshaded));
+		rt->addSceneObject(myplane);
+
+
 	/*	std::shared_ptr<SceneObject> triangle(new Triangle(glm::vec3(-15.0, -10.0, -4.0), glm::vec3(15.0f, -10.0, -4),
 		glm::vec3(0, 10.0f, -15.0f), reflect));
 		rt->addSceneObject(triangle);*/
 		
-		std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(8.0f, 0.0f, 0.0f), 6.0f, reflect));
+		std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(8.0f, 0.0f, 0.0f), 3.0f, reflect));
 		rt->addSceneObject(s1);
-		std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(-8.0f, 0.0f, 0.0f), 6.0f, reflect));
+		std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(-8.0f, 0.0f, 0.0f), 3.0f, reflect));
 		rt->addSceneObject(s2);
 		/*std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(1.0f, 0.0f, 2.0f), 2.0f, reflect));
 		rt->addSceneObject(s2);*/

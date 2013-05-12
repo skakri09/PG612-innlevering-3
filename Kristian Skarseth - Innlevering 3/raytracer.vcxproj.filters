@@ -83,7 +83,7 @@
     <ClInclude Include="include\ColorEffect.hpp">
       <Filter>Header Files\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="include\Plane.hpp">
+    <ClInclude Include="include\SizedPlane.hpp">
       <Filter>Header Files\Objects and Environment</Filter>
     </ClInclude>
   </ItemGroup>

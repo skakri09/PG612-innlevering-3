@@ -92,7 +92,7 @@
     <ClInclude Include="include\FresnelEffect.hpp" />
     <ClInclude Include="include\Light.hpp" />
     <ClInclude Include="include\PhongEffect.hpp" />
-    <ClInclude Include="include\Plane.hpp" />
+    <ClInclude Include="include\SizedPlane.hpp" />
     <ClInclude Include="include\Ray.hpp" />
     <ClInclude Include="include\RayTracer.h" />
     <ClInclude Include="include\RayTracerState.hpp" />
