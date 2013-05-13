@@ -39,7 +39,7 @@ public:
 	glm::vec3 diff;
 	glm::vec3 spec;
 };
-
+ 
 /**
 * The PointLight is a scene object that defines a point light
 */

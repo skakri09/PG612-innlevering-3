@@ -18,7 +18,7 @@ class SizedPlane : public SceneObject
 {
 public:
 /**
-	* Creates a triangle from the 3 corners p1, p2 and p3. For the normal of the surface to be correct,
+	* Creates a plane from the 4 corners p0, p1, p2 and p3. For the normal of the surface to be correct,
 	  the corners should be in counter clockwise order (as in openGL).
 	*/
 	SizedPlane(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, std::shared_ptr<SceneObjectEffect> effect) {
@@ -32,7 +32,6 @@ public:
 		this->normal = glm::cross(b, a);
 		normal = glm::normalize(normal);
 		this->effect = effect;
-		
 
 		float absX = abs(normal.x);
 		float absY = abs(normal.y);
@@ -69,6 +68,7 @@ public:
 				throwaway_index= 2;
 			}
 		}
+
 		minp = glm::vec2(glm::min(ip0.x, glm::min(ip1.x, glm::min(ip2.x, ip3.x))),
 						glm::min(ip0.y, glm::min(ip1.y, glm::min(ip2.y, ip3.y))));
 		maxp = glm::vec2(glm::max(ip0.x, glm::max(ip1.x, glm::max(ip2.x, ip3.x))),

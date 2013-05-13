@@ -68,7 +68,7 @@ public:
 
 			glm::vec3 refl_dir(glm::reflect(v, -n));
 			//glm::vec3 refract_dir(glm::refract(v, -n, eta_out));
-			glm::vec3 refract_dir = refract(-n, v, eta_out);
+			glm::vec3 refract_dir = refract(n, v, eta_out);
 
 			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
 			fresnel = glm::clamp(fresnel, 0.0f, 1.0f);
@@ -112,6 +112,18 @@ private:
 
 	static inline glm::vec3 reflect(glm::vec3& normal, glm::vec3& ray_dir){
 		return glm::vec3( 2 * glm::dot( normal, -ray_dir) * normal - (-ray_dir));
+	}
+
+	static inline glm::vec3 test_refract(glm::vec3 normal, glm::vec3 ray_dir, float eta_1, float eta_2){
+		const float n = eta_1/eta_2;
+		const float cosI = glm::dot(normal, ray_dir);
+		const float sinT2 = n * n * (1.0f - cosI * cosI);
+		if(sinT2 > 1.0f){
+			return glm::vec3();
+		}
+		else{
+			return n * ray_dir - (n + sqrt(1.0f - sinT2)) * normal;
+		}
 	}
 
 	float eta_environment;
