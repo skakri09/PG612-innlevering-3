@@ -3,7 +3,8 @@
     filename:   FresnelEffect.h
     author:     Kristian Skarseth
     
-    purpose:    
+    purpose:    Giving objects a fresnel effect by defining the environment and object
+				refractive indexes.
 *********************************************************************/
 #ifndef FresnelEffect_h__
 #define FresnelEffect_h__
@@ -14,98 +15,92 @@
 
 class FresnelEffect : public SceneObjectEffect{
 public:
-	FresnelEffect(float environement, float object)
+	/**
+	* @param environment the refractive index of the environment (default to air)
+	* @param object the refractive index of the objects using this effect
+	*/
+	FresnelEffect(float object, float environement = Snell::Air)
+		:eta_environment(environement), eta_object(object)
 	{
 		eta_environment = environement;
 		eta_object = object;
 		eta_in = eta_environment/eta_object;
 		eta_out = eta_object/eta_environment;
+
+		RF0_in = glm::pow( (eta_object-eta_environment) / (eta_object+eta_environment), 2.0f);
+		RF0_out = glm::pow( (eta_environment-eta_object) / (eta_environment+eta_object), 2.0f);
 	}
 
+	/**
+	* The fresnel rayTrace function creates a fresnel effect for the objects it affects.
+	*/
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {
 
 		glm::vec3 n = glm::normalize(normal);
 		glm::vec3 v = glm::normalize(ray.getDirection());
 
-		float dot_product = glm::dot(n, v);
-		float my_t = t;
-		if(dot_product < 0.0f){
-			//float R0 = glm::pow( (eta_in-eta_out) / (eta_in+eta_out), 2.0f);
-			float R0 = glm::pow( (eta_object-eta_environment) / (eta_object+eta_environment), 2.0f);
-
-			//glm::vec3 refl_dir(glm::reflect(v, n));
+		if(glm::dot(n, v) < 0.0f){
 			glm::vec3 refl_dir = reflect(n, v);
-
-			//glm::vec3 refract_dir(glm::refract(v, n, eta_in));
 			glm::vec3 refract_dir = refract(n, v, eta_in);
 
-			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
-			//fresnel = glm::clamp(fresnel, 0.0f, 1.0f);
+			float fresnel = RF0_in + (1.0f-RF0_in)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
+
 			float reflect_contribution = ray.getColorContribution()*fresnel;
 			float refract_contribution = ray.getColorContribution()*(1.0f-fresnel);
 
-			glm::vec3 reflect = state.rayTrace(ray.spawn(my_t, refl_dir, reflect_contribution));
-			//return ray.spawn(t, refract_dir, refract_contribution).getDirection();
-			//return refract_dir;
-			glm::vec3 refract = state.rayTrace(ray.spawn(my_t, refract_dir, refract_contribution));
-			//return refract;
-			glm::vec3 out_color = glm::mix(refract, reflect, fresnel);
-			return out_color;
+			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir, reflect_contribution));
+			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir, refract_contribution));
+
+			return glm::mix(refract, reflect, fresnel);
 		}
 		else {
-			//return glm::vec3(0.5f);
-			//return state.rayTrace(ray.spawn(t, ray.getDirection(), ray.getColorContribution()));
-			float R0 = glm::pow( (eta_environment-eta_object) / (eta_environment+eta_object), 2.0f);
-			//return glm::vec3(1.0f);
-			//return normal;
-
 			glm::vec3 refl_dir(glm::reflect(v, n));
-			//glm::vec3 refract_dir(glm::refract(v, -n, eta_out));
 			glm::vec3 refract_dir = refract(-n, v, eta_out);
 
-			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(refract_dir, n)), 5.0f);
-
-			//float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
-			//fresnel = glm::clamp(fresnel, 0.0f, 1.0f);
+			float fresnel = RF0_out + (1.0f-RF0_out)*glm::pow((1.0f-glm::dot(refract_dir, n)), 5.0f);
 			
 			float reflect_contribution = ray.getColorContribution()*fresnel;
 			float refract_contribution = ray.getColorContribution()*(1.0f-fresnel);
 
-			glm::vec3 reflect = state.rayTrace(ray.spawn(my_t, refl_dir, reflect_contribution));
-			glm::vec3 refract = state.rayTrace(ray.spawn(my_t, refract_dir, refract_contribution));
-			//return reflect;
-			//return refract;
+			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir, reflect_contribution));
+			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir, refract_contribution));
+
 			return glm::mix(refract, reflect, fresnel);
 		}
 	}
 
 
 private:
-	static inline glm::vec3 refract(glm::vec3& normal, glm::vec3& ray_dir, float eta){
-		float w = eta*(glm::dot(-ray_dir, normal));
+	/**
+	* Refracts a vector
+	*
+	* @normal the normal of the surface/point we are refracting through
+	* @ray_dir the original direction of the vector we wish to refract
+	* @eta the refractive index computed by dividing the index of the 
+		   material we are coming from, with the material we are entering
+	* @return a vector refracted based on the function parameters
+	*/
+	static inline glm::vec3 refract(glm::vec3& normal, glm::vec3& dir_vector, float eta){
+		float w = eta*(glm::dot(-dir_vector, normal));
 		float k = sqrt(1.0f+(w-eta)*(w+eta));
-		return glm::normalize(glm::vec3( (w-k)*normal - (eta*(-ray_dir)) ) );
+		return glm::normalize(glm::vec3( (w-k)*normal - (eta*(-dir_vector)) ) );
 	}
 
-	static inline glm::vec3 reflect(glm::vec3& normal, glm::vec3& ray_dir){
-		return glm::vec3( 2 * glm::dot( normal, -ray_dir) * normal - (-ray_dir));
-	}
-
-	static inline glm::vec3 test_refract(glm::vec3 normal, glm::vec3 ray_dir, float eta_1, float eta_2){
-		const float n = eta_1/eta_2;
-		const float cosI = glm::dot(normal, ray_dir);
-		const float sinT2 = n * n * (1.0f - cosI * cosI);
-		if(sinT2 > 1.0f){
-			return glm::vec3();
-		}
-		else{
-			return n * ray_dir - (n + sqrt(1.0f - sinT2)) * normal;
-		}
+	/**
+	* Reflects a vector
+	*
+	* @normal the normal of the surface/point we are reflecting on
+	* @ray_vector the original direction of the vector we are reflecting
+	* @return a vector reflected around the normal, based on the original ray_vector
+	*/
+	static inline glm::vec3 reflect(glm::vec3& normal, glm::vec3& ray_vector){
+		return glm::vec3( 2.0f * glm::dot( normal, -ray_vector) * normal - (-ray_vector));
 	}
 
 	float eta_environment;
 	float eta_object;
 	float eta_in, eta_out;
+	float RF0_in, RF0_out;
 };
 
 #endif // FresnelEffect_h__

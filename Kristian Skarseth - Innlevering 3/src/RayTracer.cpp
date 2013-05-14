@@ -56,10 +56,10 @@ void RayTracer::render() {
 	for (unsigned int j=0; j<fb->getHeight(); ++j) {
 #endif
 		for (unsigned int i=0; i<fb->getWidth(); ++i) {
-#pragma omp atomic
+			
 			rendered_pixels++;
+
 			if(omp_get_thread_num() == 0){
-				
 				if(rendered_pixels >= next_target){
 					progress+=1.0f;
 					next_target = lerp(0, total_pixels, (progress+1.0f)/100.0f);
