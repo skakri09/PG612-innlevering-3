@@ -60,13 +60,13 @@ int main(int argc, char *argv[]) {
 
 		std::shared_ptr<SceneObject> cubemap(new CubeMap(cubemap::SaintLazarusChurch));
 		rt->addSceneObject(cubemap);
-		
+	/*	
 		std::shared_ptr<SceneObject> myplane(new SizedPlane(
 			glm::vec3(-1.0f, -5.0f, 5.0f),
 			glm::vec3(8.0f, -5.0f, 5.0f),
 			glm::vec3(8.0f, -5.0f, -30.0f),
 			glm::vec3(-30.0f, -5.0f, -30.0f), reflect));
-		rt->addSceneObject(myplane);
+		rt->addSceneObject(myplane);*/
 
 
 	/*	std::shared_ptr<SceneObject> triangle(new Triangle(glm::vec3(-15.0, -10.0, -4.0), glm::vec3(15.0f, -10.0, -4),

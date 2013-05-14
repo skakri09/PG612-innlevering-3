@@ -48,7 +48,7 @@ public:
 				return -1.0f;
 		}
 		else{//No intersections
-			return -1;
+			return -1.0f;
 		}
 	}	
 	//float intersect(const Ray& r) {
