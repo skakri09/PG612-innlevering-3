@@ -14,10 +14,9 @@
   */
 class Sphere : public SceneObject {
 public:
-	Sphere(glm::vec3 center, float radius, std::shared_ptr<SceneObjectEffect> effect) {
-		this->p = center;
-		this->r = radius;
-		this->effect = effect;
+	Sphere(glm::vec3 center, float radius, std::shared_ptr<SceneObjectEffect> effect)
+		: p(center), r(radius), SceneObject(effect)
+	{
 	}
 
 	/**

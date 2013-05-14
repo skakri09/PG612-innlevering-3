@@ -21,17 +21,13 @@ public:
 	* Creates a plane from the 4 corners p0, p1, p2 and p3. For the normal of the surface to be correct,
 	  the corners should be in counter clockwise order (as in openGL).
 	*/
-	SizedPlane(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, std::shared_ptr<SceneObjectEffect> effect) {
-		this->p0 = p0;
-		this->p1 = p1;
-		this->p2 = p2;
-		this->p3 = p3;
+	SizedPlane(glm::vec3 p0, glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, std::shared_ptr<SceneObjectEffect> effect)
+		:p0(p0), p1(p1), p2(p2), p3(p3), SceneObject(effect)
+	{
 		glm::vec3 a, b;
 		a = glm::normalize(p0-p1);
 		b = glm::normalize(p2-p1);
-		this->normal = glm::cross(b, a);
-		normal = glm::normalize(normal);
-		this->effect = effect;
+		this->normal = glm::normalize(glm::cross(b, a));
 
 		float absX = abs(normal.x);
 		float absY = abs(normal.y);

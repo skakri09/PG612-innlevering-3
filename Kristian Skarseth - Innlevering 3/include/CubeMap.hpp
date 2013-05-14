@@ -22,7 +22,9 @@ namespace cubemap{
 }
 class CubeMap : public SceneObject {
 public:
-	CubeMap(std::string cubemap_path) {
+	CubeMap(std::string cubemap_path)
+		: SceneObject(effect)
+	{
 		ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 		loadImage(cubemap_path+"posx.jpg", this->posx);
 		loadImage(cubemap_path+"negx.jpg", this->negx);
