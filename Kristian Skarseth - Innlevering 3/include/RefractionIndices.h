@@ -188,6 +188,7 @@ namespace Snell{
 	static const float	Prehnite	= 1.610f;
 	static const float	Proustite	= 2.790f;
 	static const float	Purpurite	= 1.840f;
+	static const float	Pyrex	= 1.470f;
 	static const float	Pyrite	= 1.810f;
 	static const float	Pyrope	= 1.740f;
 	static const float	Quartz	= 1.544f;

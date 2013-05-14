@@ -28,6 +28,7 @@ public:
 		glm::vec3 v = glm::normalize(ray.getDirection());
 
 		float dot_product = glm::dot(n, v);
+		float my_t = t;
 		if(dot_product < 0.0f){
 			//float R0 = glm::pow( (eta_in-eta_out) / (eta_in+eta_out), 2.0f);
 			float R0 = glm::pow( (eta_object-eta_environment) / (eta_object+eta_environment), 2.0f);
@@ -43,34 +44,35 @@ public:
 			float reflect_contribution = ray.getColorContribution()*fresnel;
 			float refract_contribution = ray.getColorContribution()*(1.0f-fresnel);
 
-			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir, reflect_contribution));
-			//return reflect;
-			Ray newray(ray.getOrigin()*t, refract_dir,refract_contribution);
-			
-			glm::vec3 refract = state.rayTrace(ray);//state.rayTrace(ray.spawn(t, refract_dir, refract_contribution));
-			return refract;
+			glm::vec3 reflect = state.rayTrace(ray.spawn(my_t, refl_dir, reflect_contribution));
+			//return ray.spawn(t, refract_dir, refract_contribution).getDirection();
+			//return refract_dir;
+			glm::vec3 refract = state.rayTrace(ray.spawn(my_t, refract_dir, refract_contribution));
+			//return refract;
 			glm::vec3 out_color = glm::mix(refract, reflect, fresnel);
 			return out_color;
 		}
 		else {
+			//return glm::vec3(0.5f);
 			//return state.rayTrace(ray.spawn(t, ray.getDirection(), ray.getColorContribution()));
 			float R0 = glm::pow( (eta_environment-eta_object) / (eta_environment+eta_object), 2.0f);
-			return glm::vec3(1.0f);
+			//return glm::vec3(1.0f);
 			//return normal;
 
-			glm::vec3 refl_dir(glm::reflect(v, -n));
+			glm::vec3 refl_dir(glm::reflect(v, n));
 			//glm::vec3 refract_dir(glm::refract(v, -n, eta_out));
-			glm::vec3 refract_dir = refract(n, v, eta_out);
+			glm::vec3 refract_dir = refract(-n, v, eta_out);
 
-			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, -n)), 5.0f);
+			float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(refract_dir, n)), 5.0f);
+
 			//float fresnel = R0 + (1.0f-R0)*glm::pow((1.0f-glm::dot(-v, n)), 5.0f);
 			//fresnel = glm::clamp(fresnel, 0.0f, 1.0f);
 			
 			float reflect_contribution = ray.getColorContribution()*fresnel;
 			float refract_contribution = ray.getColorContribution()*(1.0f-fresnel);
 
-			glm::vec3 reflect = state.rayTrace(ray.spawn(t, refl_dir, reflect_contribution));
-			glm::vec3 refract = state.rayTrace(ray.spawn(t, refract_dir, refract_contribution));
+			glm::vec3 reflect = state.rayTrace(ray.spawn(my_t, refl_dir, reflect_contribution));
+			glm::vec3 refract = state.rayTrace(ray.spawn(my_t, refract_dir, refract_contribution));
 			//return reflect;
 			//return refract;
 			return glm::mix(refract, reflect, fresnel);

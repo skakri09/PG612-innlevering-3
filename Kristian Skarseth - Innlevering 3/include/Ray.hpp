@@ -36,7 +36,7 @@ public:
 	  * going in the direction of d
 	  */
 	inline Ray spawn(float t, glm::vec3 d, float color_contribution) const {
-		Ray r(getOrigin()+t*getDirection(), d, color_contribution);
+		Ray r(getOrigin()+(t+0.00001f)*getDirection(), d, color_contribution);
 		r.depth = this->depth + 1;
 		return r;
 	}
@@ -45,8 +45,8 @@ public:
 	  * Tests whether or not this ray should be raytraced further
 	  */
 	inline bool isValid() const {
-		//return (color_contribution > 0.002f);
-		return (depth < max_depth);
+		return (color_contribution > 0.002f);
+		//return (depth < max_depth);
 	}
 
 

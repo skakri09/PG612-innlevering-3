@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 		std::shared_ptr<SceneObjectEffect> reflect(new ReflectEffect(glm::vec3(0.0, 0.0, 10.0)));
 		std::shared_ptr<SceneObjectEffect> phongshaded(new ShadedPhongEffect());
 
-		std::shared_ptr<SceneObjectEffect> fresnel(new FresnelEffect(Snell::Air, Snell::Water35C));
+		std::shared_ptr<SceneObjectEffect> fresnel(new FresnelEffect(Snell::Air, Snell::));
 		std::shared_ptr<LightObject> light1(new PointLight(glm::vec3(-5.0f, 0.0f, 9.0f)));
 		rt->addLightSource(light1);
 		std::shared_ptr<LightObject> light2(new PointLight(glm::vec3(1.0f, 5.0f, 9.0f)));
