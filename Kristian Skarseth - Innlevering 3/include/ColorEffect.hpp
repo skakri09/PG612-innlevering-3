@@ -15,8 +15,7 @@
   */
 class ColorEffect : public SceneObjectEffect {
 public:
-	ColorEffect(glm::vec3 color) {
-		this->color = color;
+	ColorEffect(glm::vec3 color) : color(color){
 	}
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {

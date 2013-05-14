@@ -17,7 +17,8 @@ class PhongEffect : public SceneObjectEffect {
 public:
 	PhongEffect(glm::vec3 pos=glm::vec3(0.0),
 				glm::vec3 diff=glm::vec3(0.5),
-				glm::vec3 spec=glm::vec3(0.5)) {
+				glm::vec3 spec=glm::vec3(0.5))
+				pos(pos), diff(diff), spec(spec){
 		this->pos = pos;
 		this->diff = diff;
 		this->spec = spec;
@@ -27,17 +28,14 @@ public:
 		glm::vec3 p = ray.getOrigin() + t*ray.getDirection();
 		
 		glm::vec3 v = glm::normalize(ray.getOrigin() - p);
-		//glm::vec3 vv = glm::normalize(ray.getDirection());
 		glm::vec3 l = glm::normalize(this->pos - p);
-		/*glm::vec3 h = glm::normalize(glm::normalize(ray.getDirection()) + this->pos);*/
 		glm::vec3 h = glm::normalize(v + l);
-		//glm::vec3 h = glm::normalize(vv + this->pos);
 		glm::vec3 n = glm::normalize(normal);
 
 		float diffuse = glm::max(0.0f, glm::dot(n, l));
 		float specular = glm::pow( glm::max(0.0f, glm::dot(n, h)), 30.0f);
 
-		return glm::vec3( (diff*diffuse)+(spec*specular) );
+		return glm::vec3( (diff*diffuse) + (spec*specular) );
 	}
 
 

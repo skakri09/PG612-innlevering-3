@@ -47,8 +47,7 @@ public:
 			color += new_color;
 		}
 		color/=state.getLights().size();
-		//glm::vec3 absnormal = glm::vec3(abs(normal.x),abs(normal.y),abs(normal.z)); 
-		return color;//*shadefactor;
+		return color;
 	}
 
 

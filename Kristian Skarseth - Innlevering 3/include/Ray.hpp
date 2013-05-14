@@ -9,11 +9,8 @@
   */
 class Ray {
 public:
-	Ray(glm::vec3 origin, glm::vec3 direction, float color_contribution = 1.0f) {
-		this->origin = origin;
-		this->direction = direction;
-		depth = 0;
-		this->color_contribution = color_contribution;
+	Ray(glm::vec3 origin, glm::vec3 direction, float color_contribution = 1.0f)
+		: origin(origin), direction(direction), color_contribution(color_contribution), depth(0) {
 	}
 
 	/**

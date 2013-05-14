@@ -20,11 +20,10 @@ namespace cubemap{
 	static const std::string SwedishRoyalCastle = "cubemaps/SwedishRoyalCastle/";
 	static const std::string Creek = "cubemaps/Creek/";
 }
+
 class CubeMap : public SceneObject {
 public:
-	CubeMap(std::string cubemap_path)
-		: SceneObject(effect)
-	{
+	CubeMap(std::string cubemap_path){
 		ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
 		loadImage(cubemap_path+"posx.jpg", this->posx);
 		loadImage(cubemap_path+"negx.jpg", this->negx);
@@ -100,6 +99,7 @@ private:
 
 	/**
 	  * Returns the texel at texture coordinate [s, t] in texture tex
+	  * Performs Bilinear filtering
 	  */
 	static glm::vec3 readTexture(texture& tex, float s, float t) {
 		glm::vec3 out_color;

@@ -14,8 +14,8 @@ class LightObject;
   */
 class RayTracerState {
 public:
-	RayTracerState(glm::vec3 camera_position) {
-		this->camera_position = camera_position;
+	RayTracerState(glm::vec3 camera_position)
+		: camera_position(camera_position){
 	}
 	
 	inline std::vector<std::shared_ptr<SceneObject> >& getScene() { return scene; }

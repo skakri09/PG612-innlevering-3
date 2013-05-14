@@ -11,7 +11,8 @@
   * The plane is a scene object 
   *
   * References:
-  *				Real-Time Rendering (3rd ed) "Ray/Triangle intersection" p746-750. 
+  *				Real-Time Rendering (3rd ed) "Ray/Triangle intersection" p746-750
+  *				Dan Sunday. 2012. http://geomalgorithms.com/a06-_intersect-2.html
   */
 class Triangle : public SceneObject {
 public:
@@ -25,57 +26,49 @@ public:
 		glm::vec3 a, b;
 		a = glm::normalize(p0-p1);
 		b = glm::normalize(p2-p1);
-		this->normal = glm::cross(b, a);
-		normal = glm::normalize(normal);
+		this->normal = glm::normalize(glm::cross(b, a));
+		u = p1 - p0;
+		v = p2 - p0;
 	}
 
 	float intersect(const Ray& r) {
-		glm::vec3 u, v, n;
-		glm::vec3 dir, w0, w;
-		float q, a, b;
-		glm::vec3 intersection_point;
+		glm::vec3 dir, w0;
+		float a, b;
 		
-		u = p1 - p0; //Edge in the triangle
-		v = p2 - p0; //Edge in the triangle
-		n = normal;  //Triangle normal
-		
-		dir = r.getDirection(); // ray direction vector
-		w0 = r.getOrigin() - p0;//vector from ray origin to one of the corners of the triangle
-		a = -glm::dot(n,w0);
-		b = glm::dot(n,dir);
+		w0 = r.getOrigin() - p0; //vector from ray origin to one of the corners of the triangle
+		a = -glm::dot(normal, w0);
+		b = glm::dot(normal, r.getDirection());
 
 		if (fabs(b) < 0.000001f) { // The ray is parallel to the triangle plane
 			if (a == 0.0f)         
-				return 0.0f;	   // the ray lies in triangle plane
+				return a;	   // the ray lies in triangle plane
 			else return -1.0f;     // the ray is parallel to the plane, but not in it, thus it can never hit it.
 		}
 
-		q = a / b;
-		if (q < 0.0f) 
-			return -1; // The ray goes away from the triangle
+		float t = a / b;
+		if (t < 0.0f) 
+			return -1.0f; // The ray goes away from the triangle
 
-		intersection_point = r.getOrigin() + q * dir; // intersect point of ray and plane
-
+		glm::vec3 intersection_point = r.getOrigin() + t * r.getDirection(); // intersect point of ray and plane
+		glm::vec3 w = intersection_point - p0;
 		
-		float uu, uv, vv, wu, wv, D;
-		uu = glm::dot(u,u);
-		uv = glm::dot(u,v);
-		vv = glm::dot(v,v);
-		w = intersection_point - p0;
-		wu = glm::dot(w,u);
-		wv = glm::dot(w,v);
-		D = uv * uv - uu * vv;
+		float uu = glm::dot(u, u);
+		float uv = glm::dot(u, v);
+		float vv = glm::dot(v, v);
+		float wu = glm::dot(w, u);
+		float wv = glm::dot(w, v);
+		float d = uv * uv - uu * vv;
 
 		// Testing if the intersection point is in the triangle
-		float s = (uv * wv - vv * wu) / D;
+		float s = (uv * wv - vv * wu) / d;
 		if (s < 0.0f || s > 1.0f)        
 			return -1.0f; 
-		float t = (uv * wu - uu * wv) / D;
+		t = (uv * wu - uu * wv) / d;
 		if (t < 0.0f || (s + t) > 1.0f)
 			return -1.0f;
 
 		//The intersection point is in the triangle
-		return q;
+		return t;
 	}	
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {
@@ -84,6 +77,7 @@ public:
 
 protected:
 	glm::vec3 p0, p1, p2;
+	glm::vec3 u, v; //Edges in the triangle
 	glm::vec3 normal;
 };
 

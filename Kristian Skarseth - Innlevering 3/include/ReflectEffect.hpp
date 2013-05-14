@@ -14,11 +14,9 @@ class ReflectEffect : public SceneObjectEffect{
 public:
 	ReflectEffect(glm::vec3 pos=glm::vec3(0.0),
 		glm::vec3 diff=glm::vec3(0.5),
-		glm::vec3 spec=glm::vec3(0.5)) {
-			this->pos = pos;
-			this->diff = diff;
-			this->spec = spec;
-			absorb_amount = 0.05f;
+		glm::vec3 spec=glm::vec3(0.5))
+		: pos(pos), diff(diff), spec(spec),
+		  absorb_amount(0.05f){
 	}
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, const glm::vec3& normal, RayTracerState& state) {

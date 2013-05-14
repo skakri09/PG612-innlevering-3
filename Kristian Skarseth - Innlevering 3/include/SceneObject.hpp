@@ -37,6 +37,7 @@ public:
 
 protected:
 	std::shared_ptr<SceneObjectEffect> effect;
+	SceneObject() {};
 	SceneObject(std::shared_ptr<SceneObjectEffect> effect) : effect(effect) {};
 };
 
