@@ -23,5 +23,5 @@ absorberer 5% av "lyset". Skrur man derimot opp oppløsningen mye, og zoomer inn 
 avsluttning fremfor max dybde er at man sørger for å ikke få et synlig svart område i f.eks refleksjonen
 
 I tillegg til mandatory oppgaver er det implementert:
--Skygger for phong-shadede objekter
+-Point-light Skygger for phong-shadede objekter
 -plane sceneObject, lar deg definere et kvadratisk plan i scenen.

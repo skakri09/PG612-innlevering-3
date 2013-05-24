@@ -18,7 +18,7 @@ public:
 	PhongEffect(glm::vec3 pos=glm::vec3(0.0),
 				glm::vec3 diff=glm::vec3(0.5),
 				glm::vec3 spec=glm::vec3(0.5))
-				pos(pos), diff(diff), spec(spec){
+				: pos(pos), diff(diff), spec(spec){
 		this->pos = pos;
 		this->diff = diff;
 		this->spec = spec;

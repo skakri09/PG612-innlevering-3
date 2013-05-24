@@ -40,16 +40,19 @@ public:
 		b = glm::dot(normal, r.getDirection());
 
 		if (fabs(b) < 0.000001f) { // The ray is parallel to the triangle plane
-			if (a == 0.0f)         
+			if (a == 0.0f){       
 				return a;	   // the ray lies in triangle plane
-			else return -1.0f;     // the ray is parallel to the plane, but not in it, thus it can never hit it.
+			}
+			else {
+				return -1.0f;     // the ray is parallel to the plane, but not in it, thus it can never hit it.
+			}
 		}
 
-		float t = a / b;
-		if (t < 0.0f) 
+		float q = a / b;
+		if (q < 0.0f){
 			return -1.0f; // The ray goes away from the triangle
-
-		glm::vec3 intersection_point = r.getOrigin() + t * r.getDirection(); // intersect point of ray and plane
+		}
+		glm::vec3 intersection_point = r.getOrigin() + q * r.getDirection(); // intersect point of ray and plane
 		glm::vec3 w = intersection_point - p0;
 		
 		float uu = glm::dot(u, u);
@@ -61,14 +64,16 @@ public:
 
 		// Testing if the intersection point is in the triangle
 		float s = (uv * wv - vv * wu) / d;
-		if (s < 0.0f || s > 1.0f)        
+		if (s < 0.0f || s > 1.0f){        
 			return -1.0f; 
-		t = (uv * wu - uu * wv) / d;
-		if (t < 0.0f || (s + t) > 1.0f)
+		}
+		float t = (uv * wu - uu * wv) / d;
+		if (t < 0.0f || (s + t) > 1.0f){
 			return -1.0f;
+		}
 
 		//The intersection point is in the triangle
-		return t;
+		return q	;
 	}	
 
 	glm::vec3 rayTrace(Ray &ray, const float& t, RayTracerState& state) {

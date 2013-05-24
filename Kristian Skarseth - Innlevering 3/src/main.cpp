@@ -23,6 +23,7 @@
 #include "ShadedPhongEffect.hpp"
 #include "ReflectEffectDarkEdges.hpp"
 
+void cubeplanes(RayTracer* rt, std::shared_ptr<SceneObjectEffect> effect);
 /**
  * Simple program that starts our game manager
  */
@@ -69,21 +70,21 @@ int main(int argc, char *argv[]) {
 		rt->addSceneObject(myplane);
 
 
-		std::shared_ptr<SceneObject> triangle(new Triangle(glm::vec3(0.0, -10.0, -4.0), glm::vec3(30.0f, -10.0, -4),
-		glm::vec3(15, 10.0f, -15.0f), reflect));
+		std::shared_ptr<SceneObject> triangle(new Triangle(glm::vec3(-25.0, -10.0, -4.0), glm::vec3(5.0f, -10.0, -4.0f),
+		glm::vec3(-10, 10.0f, -12.0f), reflect));
 		rt->addSceneObject(triangle);
 		
-		std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(0.0f, 0.0f, 0.0f), 2.0f, fresnel));
+		std::shared_ptr<SceneObject> s1(new Sphere(glm::vec3(2.0f, 0.0f, 0.0f), 2.0f, fresnel));
 		rt->addSceneObject(s1);
+		std::shared_ptr<SceneObject> s11(new Sphere(glm::vec3(10.0f, 5.0f, 0.0f), 2.0f, fresnel));
+		rt->addSceneObject(s11);
 		std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(-8.0f, 0.0f, 0.0f), 2.0f, reflect));
 		rt->addSceneObject(s2);
-		//std::shared_ptr<SceneObject> s2(new Sphere(glm::vec3(1.0f, 0.0f, 2.0f), 2.0f, reflect));
-		//rt->addSceneObject(s2);
-
+		std::shared_ptr<SceneObject> s3(new Sphere(glm::vec3(-4.0f, 2.0f, 0.0f), 2.0f, reflect));
+		rt->addSceneObject(s3);
 		std::shared_ptr<SceneObject> s4(new Sphere(glm::vec3(-7.0f, -7.0f, 0.0f), 2.0f, phongshaded));
 		rt->addSceneObject(s4);
-		std::shared_ptr<SceneObject> s5(new Sphere(glm::vec3(6.0f, 1.0f, 0.0f), 2.0f, fresnel));
-		rt->addSceneObject(s5);
+
 		
 		t.restart();
 		rt->render();
@@ -98,4 +99,41 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 		return 0;
+}
+
+void cubeplanes(RayTracer* rt, std::shared_ptr<SceneObjectEffect> effect){
+	std::shared_ptr<SceneObject> myplane(new SizedPlane(
+		glm::vec3(-10.0f, -10.0f, 10.0f),
+		glm::vec3(-10.0f, -10.0f, -10.0f),
+		glm::vec3(-10.0f, 10.0f, -10.0f),
+		glm::vec3(-10.0f, 10.0f, 10.0f), effect));
+	rt->addSceneObject(myplane);
+
+	std::shared_ptr<SceneObject> myplane2(new SizedPlane(
+		glm::vec3(10.0f, -10.0f, -10.0f),
+		glm::vec3(10.0f, -10.0f, 10.0f),
+		glm::vec3(10.0f, 10.0f, 10.0f),
+		glm::vec3(10.0f, 10.0f, -10.0f), effect));
+	rt->addSceneObject(myplane2);
+
+	std::shared_ptr<SceneObject> myplane3(new SizedPlane(
+		glm::vec3(-10.0f, -10.0f, -10.0f),
+		glm::vec3(10.0f, -10.0f, -10.0f),
+		glm::vec3(10.0f, 10.0f, -10.0f),
+		glm::vec3(-10.0f, 10.0f, -10.0f), effect));
+	rt->addSceneObject(myplane3);
+
+	std::shared_ptr<SceneObject> myplane4(new SizedPlane(
+		glm::vec3(10.0f, -10.0f, 10.0f),
+		glm::vec3(-10.0f, -10.0f, 10.0f),
+		glm::vec3(-10.0f, 10.0f, 10.0f),
+		glm::vec3(10.0f, 10.0f, 10.0f), effect));
+	rt->addSceneObject(myplane4);
+
+	std::shared_ptr<SceneObject> myplane5(new SizedPlane(
+		glm::vec3(-10.0f, -10.0f, 10.0f),
+		glm::vec3(10.0f, -10.0f, 10.0f),
+		glm::vec3(10.0f, -10.0f, -10.0f),
+		glm::vec3(-10.0f, -10.0f, -10.0f), effect));
+	rt->addSceneObject(myplane5);
 }

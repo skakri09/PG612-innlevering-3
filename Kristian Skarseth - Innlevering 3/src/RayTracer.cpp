@@ -66,7 +66,7 @@ void RayTracer::render() {
 					std::cout << progress << "%" << std::endl;
 				}
 			}
-				fb->setPixel(i,j, raytrace_16x_multisampled(i, j));
+				fb->setPixel(i,j, raytrace_64x_multisampled(i, j));
 		}
 	}
 	std::cout << "100%" << std::endl;
